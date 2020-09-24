@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Typography } from 'antd';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Button, Typography } from "antd";
 
 const { Title, Text } = Typography;
 const Home = () => {
@@ -8,31 +8,29 @@ const Home = () => {
     <div>
       <>
         <center>
-          <div style={{ width: '50vw', height: '50vh' }}>
-            <Title level={1}>IRON-PROFILE</Title>
-            <Text> Made with love by Adriano, Hugo & Edgar</Text>
+          <div style={{ width: "50vw", height: "50vh" }}>
+            <Title level={1}>Vicaty </Title>
+            <Text> An API builder made with love</Text>
             <Link to="/login">
               <Button
                 style={{
-                  height: '25vh',
-                  marginTop: '15px',
-                  backgroundColor: '#638165',
-                  color: 'white',
-                  borderRadius: '10px',
+                  height: "25vh",
+                  marginTop: "15px",
+                  backgroundColor: "#638165",
+                  color: "white",
+                  borderRadius: "10px",
                 }}
                 // type="primary"
-                block
-              >
+                block>
                 LOGIN
               </Button>
             </Link>
 
             <Link to="/signup">
               <Button
-                style={{ height: '25vh', borderRadius: '10px' }}
+                style={{ height: "25vh", borderRadius: "10px" }}
                 type="default"
-                block
-              >
+                block>
                 SIGNUP
               </Button>
             </Link>

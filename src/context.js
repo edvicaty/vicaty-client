@@ -1,20 +1,18 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { getCurrentUser } from './services/auth';
+import React, { createContext, useState, useEffect } from "react";
+import { getCurrentUser } from "./services/auth";
 
 export const Context = createContext();
 
 export default function OurProvider({ children }) {
   const [user, setuser] = useState(null);
 
-  async function getSession() {
-    const { user } = await getCurrentUser();
-    console.log(user);
-    if (user?.username) {
-      loginUser(user);
-    }
-  }
-
   useEffect(() => {
+    async function getSession() {
+      const { user } = await getCurrentUser();
+      if (user?.username) {
+        loginUser(user);
+      }
+    }
     getSession();
   }, []);
 
@@ -31,8 +29,7 @@ export default function OurProvider({ children }) {
         user,
         loginUser,
         logout,
-      }}
-    >
+      }}>
       {children}
     </Context.Provider>
   );
