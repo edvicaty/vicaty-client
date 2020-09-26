@@ -5,12 +5,8 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
-const Project = () => {
-  return <p>Project detail</p>;
-};
-const Model = () => {
-  return <p>Model detail</p>;
-};
+import Project from "./pages/Project";
+import Model from "./pages/Model";
 
 const router = () => {
   return (
@@ -21,8 +17,8 @@ const router = () => {
           <Route component={Login} path="/login" />
           <Route component={Signup} path="/signup" />
           <Route component={Profile} path="/profile" />
-          <Route component={Project} path="/project" />
-          <Route component={Model} path="/model" />
+          <Route component={Project} path="/project/:projectName/:projectId" />
+          <Route component={Model} path="/model/:modelName/:modelId" />
         </Switch>
       </LayoutApp>
     </Router>

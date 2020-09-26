@@ -20,7 +20,8 @@ const LayoutApp = ({ children }) => {
       className="layout"
       style={{
         height: "100vh",
-        background: "linear-gradient(90deg, #C1DFC4 0%,  #DEECDD 100%)",
+        // background: "linear-gradient(90deg, #C1DFC4 0%,  #DEECDD 100%)",
+        overflow: "auto",
       }}>
       <Header>
         <Menu
@@ -52,7 +53,7 @@ const LayoutApp = ({ children }) => {
           )}
         </Menu>
       </Header>
-      <Content style={{ padding: "0 50px" }}>
+      <Content>
         <br />
         <br />
         {children}
@@ -63,6 +64,11 @@ const LayoutApp = ({ children }) => {
           backgroundColor: "white",
           color: "black",
           marginTop: "30px",
+          height: "50px",
+          position: "fixed",
+          bottom: "0",
+          paddingBottom: "40px",
+          width: "100vw",
         }}>
         ©2020 Edgar V. C.
       </Footer>
