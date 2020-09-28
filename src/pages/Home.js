@@ -6,7 +6,7 @@ const contentStyle = {
   color: "#fff",
   lineHeight: "160px",
   textAlign: "center",
-  background: "#364d79",
+  background: "linear-gradient(90deg, #364d79 0%, white 220%)",
 };
 const { Title, Text } = Typography;
 const Home = () => {

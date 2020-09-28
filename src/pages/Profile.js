@@ -226,11 +226,14 @@ const Profile = () => {
         </Modal>
         <div
           style={{
-            width: "70vw",
+            width: "100vw",
+            paddingLeft: "15vw",
+            paddingRight: "15vw",
             marginTop: "15px",
-            backgroundColor: "#364d79",
+            background: "linear-gradient(90deg, #364d79 0%, white 220%)",
+
             color: "white",
-            borderRadius: "5px",
+            borderRadius: "3px",
           }}>
           <Title style={{ color: "white" }} level={1}>
             {user.username.toUpperCase()}'s Projects SCHEMAS
@@ -244,7 +247,7 @@ const Profile = () => {
             style={{
               margin: "15px 0",
               backgroundColor: "white",
-              color: "#638165",
+              color: "#364d79",
             }}
             onClick={handleModal}
             block>
@@ -264,7 +267,7 @@ const Profile = () => {
                       style={{
                         margin: "15px 0",
                         backgroundColor: "white",
-                        color: "#638165",
+                        color: "#364d79",
                       }}
                       onClick={async () => {
                         await updateForm.resetFields();
@@ -281,7 +284,7 @@ const Profile = () => {
                       style={{
                         margin: "15px 0",
                         backgroundColor: "white",
-                        color: "#638165",
+                        color: "#364d79",
                       }}
                       onClick={async () => {
                         await duplicateForm.resetFields();
@@ -308,7 +311,7 @@ const Profile = () => {
                     <Button
                       style={{
                         margin: "15px 0",
-                        backgroundColor: "#638165",
+                        backgroundColor: "#364d79",
                         color: "white",
                       }}
                       block>

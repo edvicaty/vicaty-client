@@ -214,11 +214,13 @@ const Model = (props) => {
           </Modal>
           <div
             style={{
-              width: "70vw",
+              width: "100vw",
+              paddingLeft: "15vw",
+              paddingRight: "15vw",
               marginTop: "15px",
-              backgroundColor: "#364d79",
+              background: "linear-gradient(90deg, #364d79 0%, white 220%)",
+
               color: "white",
-              borderRadius: "5px",
             }}>
             <Title style={{ color: "white" }} level={1}>
               {props.match.params.modelName}'s ELEMENTS

@@ -215,11 +215,13 @@ const Project = (props) => {
           </Modal>
           <div
             style={{
-              width: "70vw",
+              width: "100vw",
+              paddingLeft: "15vw",
+              paddingRight: "15vw",
               marginTop: "15px",
-              backgroundColor: "#364d79",
+              background: "linear-gradient(90deg, #364d79 0%, white 220%)",
+
               color: "white",
-              borderRadius: "5px",
             }}>
             <Title style={{ color: "white" }} level={1}>
               {props.match.params.projectName}'s MODELS
@@ -236,7 +238,7 @@ const Project = (props) => {
               style={{
                 margin: "15px 0",
                 backgroundColor: "white",
-                color: "#638165",
+                color: "#364d79",
               }}
               onClick={handleModal}
               block>
@@ -249,7 +251,11 @@ const Project = (props) => {
                 <Card
                   key={model._id}
                   title={model.createdModelName}
-                  bordered={false}>
+                  bordered={true}
+                  style={{
+                    marginBottom: "40px",
+                    borderTop: "3px solid #364d79",
+                  }}>
                   <p>
                     <strong>Model description:</strong> {model.description}
                   </p>
@@ -257,7 +263,8 @@ const Project = (props) => {
                     style={{
                       margin: "15px 0",
                       backgroundColor: "white",
-                      color: "#638165",
+                      color: "#364d79",
+                      width: "40vw",
                     }}
                     onClick={async () => {
                       await updateModelForm.resetFields();
@@ -282,11 +289,44 @@ const Project = (props) => {
                     <strong>Last updated:</strong>{" "}
                     {model.updated_at.slice(0, 10)}
                   </p>
-                  <Collapse>
+                  <Button
+                    style={{
+                      width: "30vw",
+                      margin: "15px 0",
+                      backgroundColor: "#364d79",
+                      color: "white",
+                    }}>
+                    <Link to={`/model/${model.createdModelName}/${model._id}`}>
+                      Go to model
+                    </Link>
+                  </Button>
+                  <Button
+                    style={{
+                      width: "30vw",
+                      margin: "15px 0",
+                      backgroundColor: "red",
+                      color: "white",
+                    }}
+                    onClick={() => {
+                      setModelF(model._id);
+                      handleDeleteModal();
+                    }}>
+                    DELETE
+                  </Button>
+                  <Collapse
+                    style={{
+                      background:
+                        "linear-gradient(90deg, white 0%, #364d79 220%)",
+                    }}>
                     <Panel header="API's endpoints" key="1">
                       {Object.entries(model.api).map((object) => {
                         return (
-                          <Card key={object[0]}>
+                          <Card
+                            style={{
+                              background:
+                                "linear-gradient(90deg, white 0%, #364d79 220%)",
+                            }}
+                            key={object[0]}>
                             <p>
                               <strong style={{ width: "100%" }}>
                                 Endpoint function:{" "}
@@ -314,30 +354,6 @@ const Project = (props) => {
                       })}
                     </Panel>
                   </Collapse>
-                  <Button
-                    style={{
-                      margin: "15px 0",
-                      backgroundColor: "#638165",
-                      color: "white",
-                    }}
-                    block>
-                    <Link to={`/model/${model.createdModelName}/${model._id}`}>
-                      Go to model
-                    </Link>
-                  </Button>
-                  <Button
-                    style={{
-                      margin: "15px 0",
-                      backgroundColor: "red",
-                      color: "white",
-                    }}
-                    block
-                    onClick={() => {
-                      setModelF(model._id);
-                      handleDeleteModal();
-                    }}>
-                    DELETE
-                  </Button>
                 </Card>
               );
             })}
