@@ -1,7 +1,7 @@
 import axios from "axios";
 let baseURL = "http://localhost:3000/auth";
 process.env.NODE_ENV === "production"
-  ? (baseURL = "/auth")
+  ? (baseURL = "https://vicaty.herokuapp.com/auth")
   : (baseURL = "http://localhost:3000/auth");
 
 const authService = axios.create({

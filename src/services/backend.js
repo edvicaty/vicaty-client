@@ -1,7 +1,7 @@
 import axios from "axios";
 let baseURL = "http://localhost:3000/user";
 process.env.NODE_ENV === "production"
-  ? (baseURL = "/user")
+  ? (baseURL = "https://vicaty.herokuapp.com/user")
   : (baseURL = "http://localhost:3000/user");
 
 const userService = axios.create({
