@@ -14,14 +14,13 @@ import {
 } from "antd";
 import axios from "axios";
 import { updatePhoto, getCurrentUser } from "../services/auth";
+import { viewModel, getElement } from "../services/backend";
 import {
-  viewModel,
-  createElement,
   addSingle,
-  getElement,
-  updateSingle,
+  createElement,
   deleteSingleData,
-} from "../services/backend";
+  updateSingle,
+} from "../services/api";
 import { Context } from "../context";
 import { Link } from "react-router-dom";
 const { Title, Text } = Typography;
