@@ -17,6 +17,7 @@ import {
   viewProject,
   createModel,
   deleteCreatedModel,
+  editModel,
 } from "../services/backend";
 import { Context } from "../context";
 import { Link } from "react-router-dom";
@@ -28,10 +29,13 @@ const Project = (props) => {
   const { user, loginUser } = useContext(Context);
   const [project, setProject] = useState(null);
   const [form] = Form.useForm();
+  const [updateModelForm] = Form.useForm();
   const [fetchedProject, setFetchedProject] = useState(false);
   const [modalState, setModalState] = useState(false);
   const [modelDeleteModal, setModelDeleteModal] = useState(false);
   const [modelToDelete, setModelToDelete] = useState(null);
+  const [modelUpdateModal, setModelUpdateModal] = useState(false);
+  const [modelToUpdate, setModelToUpdate] = useState(false);
 
   //load data functions
   useEffect(() => {
@@ -46,8 +50,8 @@ const Project = (props) => {
   }, [fetchedProject]);
 
   //Form functions
-  async function onFinish({ createdModelName }) {
-    createModel(createdModelName, props.match.params.projectId);
+  async function onFinish({ createdModelName, description }) {
+    createModel(createdModelName, props.match.params.projectId, description);
     setFetchedProject(false);
     handleModal();
   }
@@ -67,6 +71,23 @@ const Project = (props) => {
     console.log(message);
     setFetchedProject(false);
     handleDeleteModal();
+  }
+  function setModelToUpdateF(modelName, modelId, description) {
+    setModelToUpdate({
+      modelName: modelName,
+      modelId: modelId,
+      description: description,
+    });
+  }
+  function handleModelUpdateModal() {
+    setModelUpdateModal(!modelUpdateModal);
+    updateModelForm.resetFields();
+  }
+  function onFinishUpdate(values) {
+    editModel(modelToUpdate.modelId, values.modelName, values.description);
+    updateModelForm.resetFields();
+    handleModelUpdateModal();
+    setFetchedProject(false);
   }
   //image uploader
   const uploadImageUrl = async (e) => {
@@ -98,6 +119,63 @@ const Project = (props) => {
                 name="createdModelName"
                 rules={[
                   { required: true, message: "Please input model name" },
+                ]}>
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="Model description or value"
+                name="description"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input model value or description",
+                  },
+                ]}>
+                <Input />
+              </Form.Item>
+
+              <Form.Item>
+                <Button
+                  style={{
+                    marginTop: "15px",
+                    backgroundColor: "#638165",
+                    color: "white",
+                    borderRadius: "10px",
+                  }}
+                  block
+                  htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </Modal>
+          <Modal
+            title="Update Model"
+            visible={modelUpdateModal}
+            onOk={handleModelUpdateModal}
+            onCancel={handleModelUpdateModal}>
+            <Form
+              layout="vertical"
+              form={updateModelForm}
+              onFinish={onFinishUpdate}>
+              <Form.Item
+                initialValue={modelToUpdate.modelName}
+                label="Model name"
+                name="modelName"
+                rules={[
+                  { required: true, message: "Please input model's name" },
+                ]}>
+                <Input />
+              </Form.Item>
+              <Form.Item
+                initialValue={modelToUpdate.description}
+                label="Model description"
+                name="description"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input model's description",
+                  },
                 ]}>
                 <Input />
               </Form.Item>
@@ -146,6 +224,9 @@ const Project = (props) => {
             <Title style={{ color: "white" }} level={1}>
               {props.match.params.projectName}'s MODELS
             </Title>
+            <Title style={{ color: "white" }} level={3}>
+              {props.match.params.projectName}'s MODELS
+            </Title>
             <h3 style={{ color: "white" }}>
               Here you can see all your models corresponding to the
               {props.match.params.projectName} project. click below to create a
@@ -170,14 +251,35 @@ const Project = (props) => {
                   title={model.createdModelName}
                   bordered={false}>
                   <p>
+                    <strong>Model description:</strong> {model.description}
+                  </p>
+                  <Button
+                    style={{
+                      margin: "15px 0",
+                      backgroundColor: "white",
+                      color: "#638165",
+                    }}
+                    onClick={async () => {
+                      await updateModelForm.resetFields();
+                      await setModelToUpdateF(
+                        model.createdModelName,
+                        model._id,
+                        model.description
+                      );
+                      handleModelUpdateModal();
+                    }}
+                    block>
+                    Update Model's name and description
+                  </Button>
+                  <p>
                     <strong>Model id:</strong> {model._id}
                   </p>
                   <p>
-                    <strong>Creation date:</strong>
+                    <strong>Creation date:</strong>{" "}
                     {model.created_at.slice(0, 10)}
                   </p>
                   <p>
-                    <strong>Last updated:</strong>
+                    <strong>Last updated:</strong>{" "}
                     {model.updated_at.slice(0, 10)}
                   </p>
                   <Collapse>
@@ -187,18 +289,25 @@ const Project = (props) => {
                           <Card key={object[0]}>
                             <p>
                               <strong style={{ width: "100%" }}>
-                                Endpoint function: {object[0]}
+                                Endpoint function:{" "}
                               </strong>
+                              {object[0]}
                             </p>
                             <p>
                               <strong style={{ width: "100%" }}>
-                                Request: {object[1].reqType}
+                                Request:{" "}
                               </strong>
+                              {object[1].reqType}
+                            </p>
+                            <p>
+                              <strong style={{ width: "100%" }}>Route: </strong>{" "}
+                              {object[1].route}
                             </p>
                             <p>
                               <strong style={{ width: "100%" }}>
-                                Route: {object[1].route}
+                                Request body elements:{" "}
                               </strong>
+                              {object[1].body}
                             </p>
                           </Card>
                         );

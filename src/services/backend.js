@@ -22,9 +22,10 @@ export const deleteProject = async (projectId) => {
   console.log(`messageee`, message);
   return message;
 };
-export const createModel = async (createdModelName, projectId) => {
+export const createModel = async (createdModelName, projectId, description) => {
   const newModel = await userService.post(`/model/${projectId}`, {
     createdModelName,
+    description,
   });
   return newModel;
 };
@@ -32,8 +33,31 @@ export const viewProject = async (projectId) => {
   const project = await userService.get(`/project/${projectId}`);
   return project;
 };
+
+export const editProject = async (projectId, projectName) => {
+  const project = await userService.put(`/project/${projectId}`, {
+    projectName,
+  });
+  return project;
+};
+
+export const duplicateProject = async (projectId, projectName) => {
+  const project = await userService.post(`/duplicateProject/${projectId}`, {
+    projectName,
+  });
+  return project;
+};
+
 export const viewModel = async (modelId) => {
   const model = await userService.get(`/model/${modelId}`);
+  return model;
+};
+
+export const editModel = async (modelId, createdModelName, description) => {
+  const model = await userService.put(`/model/${modelId}`, {
+    createdModelName,
+    description,
+  });
   return model;
 };
 export const deleteCreatedModel = async (modelId) => {

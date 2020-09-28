@@ -7,6 +7,8 @@ import {
   viewProjects,
   createProject,
   deleteProject,
+  editProject,
+  duplicateProject,
 } from "../services/backend";
 import { Context } from "../context";
 import { Link } from "react-router-dom";
@@ -18,9 +20,16 @@ const Profile = () => {
   const [projects, setProjects] = useState(null);
   const [fetchedProjects, setFetchedProjects] = useState(false);
   const [form] = Form.useForm();
+  const [updateForm] = Form.useForm();
+  const [duplicateForm] = Form.useForm();
   const [modalState, setModalState] = useState(false);
   const [projectDeleteModal, setProjectDeleteModal] = useState(false);
+  const [updateModalState, setUpdateModalState] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
+  const [projectToUpdate, setProjectToUpdate] = useState(`null`);
+
+  const [duplicationModalState, setDuplicationModalState] = useState(false);
+  const [projectToDuplicate, setProjectToDuplicate] = useState(`null`);
   //load data functions
   useEffect(() => {
     const getProjects = async () => {
@@ -32,7 +41,6 @@ const Profile = () => {
     };
     getProjects();
   }, [fetchedProjects]);
-  console.log(projects);
   //Form functions
   async function onFinish(values) {
     createProject(values);
@@ -44,6 +52,7 @@ const Profile = () => {
   function handleModal() {
     setModalState(!modalState);
   }
+
   function handleDeleteProject() {
     setProjectDeleteModal(!projectDeleteModal);
   }
@@ -54,6 +63,37 @@ const Profile = () => {
     const message = deleteProject(projectToDelete);
     setFetchedProjects(false);
     handleDeleteProject();
+  }
+  function setProjectToUpdateF(projectName, projectId) {
+    setProjectToUpdate({ projectName: projectName, projectId: projectId });
+  }
+  function handleUpdateModal() {
+    setUpdateModalState(!updateModalState);
+    updateForm.resetFields();
+  }
+  function onFinishUpdate(values) {
+    // console.log(`form values`, values);
+    // console.log(`projtouuup`, projectToUpdate);
+    editProject(projectToUpdate.projectId, values.projectName);
+    updateForm.resetFields();
+    handleUpdateModal();
+    setFetchedProjects(false);
+  }
+  //duplication functions
+  function setProjectToDuplicateF(projectName, projectId) {
+    setProjectToDuplicate({ projectName: projectName, projectId: projectId });
+  }
+
+  function handleDuplicationModal() {
+    setDuplicationModalState(!duplicationModalState);
+    duplicateForm.resetFields();
+  }
+
+  async function onFinishDuplication(values) {
+    await duplicateProject(projectToDuplicate.projectId, values.projectName);
+    duplicateForm.resetFields();
+    handleDuplicationModal();
+    setFetchedProjects(false);
   }
   //image uploader
   const uploadImageUrl = async (e) => {
@@ -74,13 +114,13 @@ const Profile = () => {
     <div>
       <center>
         <Modal
-          title="Create new Project"
+          title="Create new Project Schema"
           visible={modalState}
           onOk={handleModal}
           onCancel={handleModal}>
           <Form layout="vertical" form={form} onFinish={onFinish}>
             <Form.Item
-              label="Project name"
+              label="Project Schema name"
               name="projectName"
               rules={[{ required: true, message: "Please input project" }]}>
               <Input />
@@ -97,6 +137,71 @@ const Profile = () => {
                 block
                 htmlType="submit">
                 Submit
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+        <Modal
+          title="Update Project Schema's name"
+          visible={updateModalState}
+          onOk={handleUpdateModal}
+          onCancel={handleUpdateModal}>
+          <Form layout="vertical" form={updateForm} onFinish={onFinishUpdate}>
+            <Form.Item
+              initialValue={projectToUpdate.projectName}
+              label="Project Schema name"
+              name="projectName"
+              rules={[
+                { required: true, message: "Please input project's name" },
+              ]}>
+              <Input />
+            </Form.Item>
+
+            <Form.Item>
+              <Button
+                style={{
+                  marginTop: "15px",
+                  backgroundColor: "#638165",
+                  color: "white",
+                  borderRadius: "10px",
+                }}
+                block
+                htmlType="submit">
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+        <Modal
+          title={`Duplicate Project from ${projectToDuplicate.projectName}`}
+          visible={duplicationModalState}
+          onOk={handleDuplicationModal}
+          onCancel={handleDuplicationModal}>
+          <Form
+            layout="vertical"
+            form={duplicateForm}
+            onFinish={onFinishDuplication}>
+            <Form.Item
+              initialValue={projectToDuplicate.projectName}
+              label="New Project name"
+              name="projectName"
+              rules={[
+                { required: true, message: "Please input project's name" },
+              ]}>
+              <Input />
+            </Form.Item>
+
+            <Form.Item>
+              <Button
+                style={{
+                  marginTop: "15px",
+                  backgroundColor: "#638165",
+                  color: "white",
+                  borderRadius: "10px",
+                }}
+                block
+                htmlType="submit">
+                Duplicate
               </Button>
             </Form.Item>
           </Form>
@@ -128,12 +233,12 @@ const Profile = () => {
             borderRadius: "5px",
           }}>
           <Title style={{ color: "white" }} level={1}>
-            {user.username.toUpperCase()}'s PROJECTS
+            {user.username.toUpperCase()}'s Projects SCHEMAS
             <p>USER ID : {user._id}</p>
           </Title>
           <h3 style={{ color: "white" }}>
-            Here you can see all of your existing projects. Don't have any?
-            click below to create a new one!
+            Here you can see all of your existing projects schemas. Don't have
+            any? click below to create a new one!
           </h3>
           <Button
             style={{
@@ -143,7 +248,7 @@ const Profile = () => {
             }}
             onClick={handleModal}
             block>
-            Create New project!
+            Create New Project Schema!
           </Button>
         </div>
         <div style={{ margin: "20px" }}>
@@ -155,6 +260,40 @@ const Profile = () => {
                     title={project.projectName}
                     bordered={false}
                     style={{ width: 300 }}>
+                    <Button
+                      style={{
+                        margin: "15px 0",
+                        backgroundColor: "white",
+                        color: "#638165",
+                      }}
+                      onClick={async () => {
+                        await updateForm.resetFields();
+                        await setProjectToUpdateF(
+                          project.projectName,
+                          project._id
+                        );
+                        handleUpdateModal();
+                      }}
+                      block>
+                      Update Project's name
+                    </Button>
+                    <Button
+                      style={{
+                        margin: "15px 0",
+                        backgroundColor: "white",
+                        color: "#638165",
+                      }}
+                      onClick={async () => {
+                        await duplicateForm.resetFields();
+                        await setProjectToDuplicateF(
+                          project.projectName,
+                          project._id
+                        );
+                        handleDuplicationModal();
+                      }}
+                      block>
+                      Duplicate Project
+                    </Button>
                     <p>
                       <strong>Project id:</strong> {project._id}
                     </p>
