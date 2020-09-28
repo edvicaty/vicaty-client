@@ -1,6 +1,9 @@
 import axios from "axios";
+let baseURL = "http://localhost:3000/user";
+process.env.NODE_ENV === "production"
+  ? (baseURL = "https://vicaty-api.herokuapp.com/user")
+  : (baseURL = "http://localhost:3002/user");
 
-const baseURL = "http://localhost:3002/user";
 const userService = axios.create({
   baseURL,
   withCredentials: false,
@@ -21,6 +24,7 @@ export const createElement = async (elementName, modelId, userId) => {
   });
   return updatedModel;
 };
+
 export const addSingle = async ({ data }, modelId, elementName, userId) => {
   const updatedElement = await userService.post(
     `/element/addSingle/${modelId}/${elementName}`,
