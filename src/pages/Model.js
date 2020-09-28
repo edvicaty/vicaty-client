@@ -10,6 +10,7 @@ import {
   Form,
   Modal,
   Collapse,
+  notification,
 } from "antd";
 import axios from "axios";
 import { updatePhoto, getCurrentUser } from "../services/auth";
@@ -40,7 +41,13 @@ const Model = (props) => {
   const [dataUpdateModal, setDataUpdateModal] = useState(false);
   const [dataValue, setDataValue] = useState(null);
   const [newDataValue, setNewDataValue] = useState(null);
-
+  const openNotificationWithIcon = (type) => {
+    notification[type]({
+      message: "ERROR",
+      description:
+        "An element already exists with that name. Element's names must be unique",
+    });
+  };
   //load data functions
   useEffect(() => {
     const getModel = async () => {
@@ -81,10 +88,18 @@ const Model = (props) => {
   //
   //Form functions
   async function onFinish({ elementName }) {
-    createElement(elementName, props.match.params.modelId, user._id);
-    form.resetFields();
-    setFetchedModel(false);
-    handleModal();
+    const newElem = await createElement(
+      elementName,
+      props.match.params.modelId,
+      user._id
+    );
+    if (!newElem.data) {
+      openNotificationWithIcon(`warning`);
+    } else {
+      form.resetFields();
+      setFetchedModel(false);
+      handleModal();
+    }
   }
 
   function handleModal() {
@@ -97,6 +112,7 @@ const Model = (props) => {
   }
   async function onFinishData(value) {
     addSingle(value, props.match.params.modelId, elementName, user._id);
+
     setFetchedModel(false);
     dataForm.resetFields();
     handleDataCreationModal();
@@ -201,7 +217,7 @@ const Model = (props) => {
             style={{
               width: "70vw",
               marginTop: "15px",
-              backgroundColor: "#638165",
+              backgroundColor: "#364d79",
               color: "white",
               borderRadius: "5px",
             }}>
@@ -217,7 +233,7 @@ const Model = (props) => {
               style={{
                 margin: "15px 0",
                 backgroundColor: "white",
-                color: "#638165",
+                color: "#364d79",
               }}
               onClick={handleModal}
               block>

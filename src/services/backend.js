@@ -5,6 +5,14 @@ const userService = axios.create({
   baseURL,
   withCredentials: true,
 });
+userService.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    return error;
+  }
+);
 
 export const viewProjects = async () => {
   const projects = await userService.get("/");

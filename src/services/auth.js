@@ -1,35 +1,43 @@
-import axios from 'axios';
+import axios from "axios";
 
-const baseURL = 'http://localhost:3000/auth';
+const baseURL = "http://localhost:3000/auth";
 const authService = axios.create({
   baseURL,
   withCredentials: true,
 });
 
-export const signup = async ({ username, password, campus, course }) => {
-  await authService.post('/signup', {
+authService.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    return error;
+  }
+);
+
+export const signup = async ({ username, email, password }) => {
+  const user = await authService.post("/signup", {
     username,
     password,
-    campus: campus[0],
-    course: course[0],
+    email,
   });
-  return true;
+  return user;
 };
 
 export const login = async (userData) => {
-  const { data: user } = await authService.post('/login', userData);
+  const { data: user } = await authService.post("/login", userData);
   return user;
 };
 
 export const getCurrentUser = async () => {
-  const { data: user } = await authService.get('/currentuser');
+  const { data: user } = await authService.get("/currentuser");
   return user;
 };
 
 export const logoutP = async () => {
-  await authService.get('/logout');
+  await authService.get("/logout");
 };
 
 export const updatePhoto = async (image) => {
-  await authService.put('/photo', { image });
+  await authService.put("/photo", { image });
 };

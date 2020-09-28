@@ -161,7 +161,7 @@ const Profile = () => {
               <Button
                 style={{
                   marginTop: "15px",
-                  backgroundColor: "#638165",
+                  backgroundColor: "#364d79",
                   color: "white",
                   borderRadius: "10px",
                 }}
@@ -228,7 +228,7 @@ const Profile = () => {
           style={{
             width: "70vw",
             marginTop: "15px",
-            backgroundColor: "#638165",
+            backgroundColor: "#364d79",
             color: "white",
             borderRadius: "5px",
           }}>

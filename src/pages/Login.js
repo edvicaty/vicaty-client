@@ -1,20 +1,34 @@
 import React, { useContext } from "react";
-import { Form, Input, Button, Cascader } from "antd";
+import { Form, Input, Button, Cascader, Typography, notification } from "antd";
 import { login } from "../services/auth";
 import { Redirect } from "react-router-dom";
 import { Context } from "../context";
+
+const { Title, Text } = Typography;
+
 const Signup = ({ history }) => {
   const [form] = Form.useForm();
   const { user, loginUser } = useContext(Context);
+  const openNotificationWithIcon = (type) => {
+    notification[type]({
+      message: "ERROR",
+      description: "Wrong Username or Password",
+    });
+  };
 
   async function onFinish(values) {
     const user = await login(values);
-    loginUser(user);
-    history.push("/profile");
+    if (!user) {
+      openNotificationWithIcon(`warning`);
+    } else {
+      loginUser(user);
+      history.push("/profile");
+    }
   }
 
   return !user ? (
     <Form layout="vertical" form={form} onFinish={onFinish}>
+      <Title level={1}>LOGIN</Title>
       <Form.Item
         label="User Name"
         name="username"
@@ -34,13 +48,13 @@ const Signup = ({ history }) => {
           // type="primary"
           style={{
             marginTop: "15px",
-            backgroundColor: "#638165",
+            backgroundColor: "#364d79",
             color: "white",
             borderRadius: "10px",
           }}
           block
           htmlType="submit">
-          Submit
+          LOGIN
         </Button>
       </Form.Item>
     </Form>
