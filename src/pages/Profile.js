@@ -1,6 +1,18 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
-import { Button, Typography, Input, Card, Row, Col, Form, Modal } from "antd";
+import {
+  Button,
+  Typography,
+  Input,
+  Card,
+  Row,
+  Col,
+  Form,
+  Modal,
+  Collapse,
+  Timeline,
+  Image,
+} from "antd";
 import axios from "axios";
 import { updatePhoto, getCurrentUser } from "../services/auth";
 import {
@@ -14,6 +26,7 @@ import { Context } from "../context";
 import { Link } from "react-router-dom";
 
 const { Title, Text } = Typography;
+const { Panel } = Collapse;
 
 const Profile = () => {
   const { user, loginUser } = useContext(Context);
@@ -72,8 +85,6 @@ const Profile = () => {
     updateForm.resetFields();
   }
   function onFinishUpdate(values) {
-    // console.log(`form values`, values);
-    // console.log(`projtouuup`, projectToUpdate);
     editProject(projectToUpdate.projectId, values.projectName);
     updateForm.resetFields();
     handleUpdateModal();
@@ -95,6 +106,7 @@ const Profile = () => {
     handleDuplicationModal();
     setFetchedProjects(false);
   }
+
   //image uploader
   const uploadImageUrl = async (e) => {
     const data = new FormData();
@@ -227,30 +239,58 @@ const Profile = () => {
         <div
           style={{
             width: "100vw",
-            paddingLeft: "15vw",
-            paddingRight: "15vw",
-            marginTop: "15px",
             background: "linear-gradient(90deg, #364d79 0%, white 220%)",
-
+            padding: "30px 15vw",
             color: "white",
             borderRadius: "3px",
           }}>
           <Title style={{ color: "white" }} level={1}>
-            {user.username.toUpperCase()}'s Projects SCHEMAS
-            <p>USER ID : {user._id}</p>
+            Projects Schemas
           </Title>
+          <Title style={{ color: "white" }} level={3}>
+            Main Content of your API
+          </Title>
+          <Collapse
+            style={{
+              // background: "linear-gradient(90deg, white 0%, #364d79 220%)",
+              marginBottom: "15px",
+            }}>
+            <Panel header="Show UserID token" key="1">
+              <p>
+                <strong>USER ID :</strong> {user._id}
+              </p>
+            </Panel>
+          </Collapse>
+          <Collapse
+            style={{
+              background: "linear-gradient(90deg, white 0%, #364d79 220%)",
+              marginBottom: "15px",
+            }}>
+            <Panel header="Show API endpoint to fetch all Projects" key="1">
+              <p>
+                <strong>Route :</strong>{" "}
+                https://vicaty-api.herokuapp.com/user/project
+              </p>
+              <p>
+                <strong>Request Type :</strong> POST
+              </p>
+              <p>
+                <strong>Request Body :</strong> userId : *your user Id*
+              </p>
+            </Panel>
+          </Collapse>
+
           <h3 style={{ color: "white" }}>
             Here you can see all of your existing projects schemas. Don't have
             any? click below to create a new one!
           </h3>
+
           <Button
             style={{
               margin: "15px 0",
-              backgroundColor: "white",
               color: "#364d79",
             }}
-            onClick={handleModal}
-            block>
+            onClick={handleModal}>
             Create New Project Schema!
           </Button>
         </div>
@@ -259,10 +299,7 @@ const Profile = () => {
             {projects?.map((project) => {
               return (
                 <Col key={project._id} xs={24} sm={24} md={12} lg={8}>
-                  <Card
-                    title={project.projectName}
-                    bordered={false}
-                    style={{ width: 300 }}>
+                  <Card title={project.projectName} bordered={false}>
                     <Button
                       style={{
                         margin: "15px 0",
@@ -297,6 +334,7 @@ const Profile = () => {
                       block>
                       Duplicate Project
                     </Button>
+
                     <p>
                       <strong>Project id:</strong> {project._id}
                     </p>
@@ -308,6 +346,27 @@ const Profile = () => {
                       <strong>Last updated:</strong>{" "}
                       {project.updated_at.slice(0, 10)}
                     </p>
+                    <Collapse
+                      style={{
+                        background:
+                          "linear-gradient(90deg, white 0%, #364d79 300%)",
+                        marginBottom: "15px",
+                      }}>
+                      <Panel header="API endpoint to fetch project" key="1">
+                        <p>
+                          <strong>Route :</strong>{" "}
+                          https://vicaty-api.herokuapp.com/user/project/
+                          {project._id}
+                        </p>
+                        <p>
+                          <strong>Request Type :</strong> POST
+                        </p>
+                        <p>
+                          <strong>Request Body :</strong> userId : *your user
+                          Id*
+                        </p>
+                      </Panel>
+                    </Collapse>
                     <Button
                       style={{
                         margin: "15px 0",
@@ -364,5 +423,5 @@ export default Profile;
           id="image"
           onChange={uploadImageUrl}
         />
-        */
+   */
 }

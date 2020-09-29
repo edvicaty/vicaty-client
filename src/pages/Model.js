@@ -20,6 +20,7 @@ import {
   createElement,
   deleteSingleData,
   updateSingle,
+  deleteElement,
 } from "../services/api";
 import { Context } from "../context";
 import { Link } from "react-router-dom";
@@ -39,7 +40,10 @@ const Model = (props) => {
   const [valueId, setValueId] = useState(null);
   const [dataUpdateModal, setDataUpdateModal] = useState(false);
   const [dataValue, setDataValue] = useState(null);
-  const [newDataValue, setNewDataValue] = useState(null);
+
+  const [elementToDelete, setElementToDelete] = useState(null);
+  const [elementDeleteModal, setElementDeleteModal] = useState(false);
+
   const openNotificationWithIcon = (type) => {
     notification[type]({
       message: "ERROR",
@@ -59,32 +63,7 @@ const Model = (props) => {
     };
     getModel();
   }, [fetchedModel]);
-  //
-  //
-  //
-  //
-  //   console.log(`modeeeeeel`, model);
-  //TODO: complete edit and delete
-  if (model) {
-    //TODO voy aqui, these are the necessary Routes for Mapping data as JSX
-    //TODO: put elements[i] index as key to search for it
-    // console.log(`namee`, Object.entries(model[0].elements[0])[0][0]); //name of the element as String, ELEMENTS[i] INDEX IS IMPORTANT
-    // console.log(`arrToMap`, model[0].elements); //name of the element as String, ELEMENTS[i] INDEX IS IMPORTANT
-    // console.log(`dataa`, Object.entries(model[0].elements[0])[0][1].data); //data (values of elements) as array of objects
-    // console.log(
-    //   `valuee`,
-    //   Object.entries(model[0].elements[0])[0][1].data[0].value
-    // );
-    //value of element as String (or primitive data)
-    // console.log(
-    //   `data. knowing element's name and elements index IS IMPORTANT`,
-    //   model[0].elements[0].testElement1Edg.data
-    // ); //name of the element as String
-  }
-  //
-  //
-  //
-  //
+
   //Form functions
   async function onFinish({ elementName }) {
     const newElem = await createElement(
@@ -161,6 +140,22 @@ const Model = (props) => {
     setFetchedModel(false);
     handleDataUpdateModal();
   }
+
+  //Element to delete
+  function handleElementDeletionModal() {
+    setElementDeleteModal(!elementDeleteModal);
+  }
+
+  function setElementToDeleteF(elementName) {
+    setElementToDelete(elementName);
+  }
+
+  function confirmDeleteElement() {
+    console.log(`elem to dell`, elementToDelete);
+    deleteElement(elementToDelete, props.match.params.modelId, user._id);
+    setFetchedModel(false);
+    handleElementDeletionModal();
+  }
   //get elements
   //image uploader
   const uploadImageUrl = async (e) => {
@@ -215,19 +210,23 @@ const Model = (props) => {
           <div
             style={{
               width: "100vw",
-              paddingLeft: "15vw",
-              paddingRight: "15vw",
-              marginTop: "15px",
-              background: "linear-gradient(90deg, #364d79 0%, white 220%)",
+              padding: "30px 15vw",
 
+              background: "linear-gradient(90deg, #364d79 0%, white 220%)",
               color: "white",
             }}>
             <Title style={{ color: "white" }} level={1}>
-              {props.match.params.modelName}'s ELEMENTS
+              {props.match.params.modelName}
+            </Title>
+            <Title style={{ color: "white" }} level={3}>
+              MODEL Id: {props.match.params.modelId}
+            </Title>
+            <Title style={{ color: "white" }} level={3}>
+              ELEMENTS
             </Title>
             <h3 style={{ color: "white" }}>
-              Here you can see all your elements corresponding to the
-              {props.match.params.modelName} model. click below to create a new
+              Here you can see all your elements corresponding to the{" "}
+              {props.match.params.modelName} model. Click below to create a new
               one!
             </h3>
             <Button
@@ -240,172 +239,348 @@ const Model = (props) => {
               block>
               Create New Element!
             </Button>
+            <Collapse
+              style={{
+                background: "linear-gradient(90deg, white 0%, #364d79 300%)",
+                marginBottom: "15px",
+              }}>
+              <Panel header="API endpoints" key="1">
+                <Title level={5}>Get Model </Title>
+                <p>
+                  <strong>Route :</strong>{" "}
+                  https://vicaty-api.herokuapp.com/user/createdModel/
+                  {props.match.params.modelId}
+                </p>
+                <p>
+                  <strong>Request Type :</strong> POST
+                </p>
+                <p>
+                  <strong>Request Body :</strong> userId : *your user Id*
+                </p>
+                <hr />
+                <Title level={5}>Create Element </Title>
+                <p>
+                  <strong>Route :</strong>{" "}
+                  https://vicaty-api.herokuapp.com/user/element/create/
+                  {props.match.params.modelId}
+                </p>
+                <p>
+                  <strong>Request Type :</strong> POST
+                </p>
+                <p>
+                  <strong>Request Body :</strong> userId : *your user Id* ||
+                  elementName: *your new element Name*
+                </p>
+              </Panel>
+            </Collapse>
           </div>
           <div style={{ margin: "20px" }}>
-            <Row gutter={[16, 16]}>
-              <Modal
-                title="Add data"
-                visible={dataCreationModal}
-                onOk={handleDataCreationModal}
-                onCancel={handleDataCreationModal}>
-                <Form layout="vertical" form={dataForm} onFinish={onFinishData}>
-                  <Form.Item
-                    label="Data value"
-                    name="data"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input data",
-                      },
-                    ]}>
-                    <Input />
-                  </Form.Item>
+            <Modal
+              title="Add data"
+              visible={dataCreationModal}
+              onOk={handleDataCreationModal}
+              onCancel={handleDataCreationModal}>
+              <Form layout="vertical" form={dataForm} onFinish={onFinishData}>
+                <Form.Item
+                  label="Data value"
+                  name="data"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input data",
+                    },
+                  ]}>
+                  <Input />
+                </Form.Item>
 
-                  <Form.Item>
-                    <Button
-                      style={{
-                        marginTop: "15px",
-                        backgroundColor: "#638165",
-                        color: "white",
-                        borderRadius: "10px",
-                      }}
-                      htmlType="submit">
-                      Add Data
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </Modal>
-              <Modal
-                title="Delete Data"
-                visible={deleteModalState}
-                onOk={handleDeleteElementModal}
-                onCancel={handleDeleteElementModal}>
-                <Title level={2}>
-                  Are you sure you want to delete this entry?
-                </Title>
-                <Button
-                  style={{
-                    marginTop: "15px",
-                    backgroundColor: "red",
-                    color: "white",
-                    borderRadius: "10px",
-                  }}
-                  onClick={deleteWithConfirmation}
-                  block>
-                  DELETE
-                </Button>
-              </Modal>
-              <Modal
-                title="Update Data"
-                visible={dataUpdateModal}
-                onOk={handleDataUpdateModal}
-                onCancel={handleDataUpdateModal}>
-                <Title level={3}>
-                  Current value:
-                  <span
+                <Form.Item>
+                  <Button
                     style={{
-                      fontSize: "1.1rem",
-                      color: "#696969",
-                      marginLeft: "10px",
-                    }}>
-                    {dataValue}
-                  </span>
-                </Title>
-                <Form
-                  layout="vertical"
-                  form={updateDataForm}
-                  onFinish={onFinishUpdateData}>
-                  <Form.Item
-                    label="Input new value:"
-                    name="data"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input data",
-                      },
-                    ]}>
-                    <Input />
-                  </Form.Item>
+                      marginTop: "15px",
+                      backgroundColor: "#638165",
+                      color: "white",
+                      borderRadius: "10px",
+                    }}
+                    htmlType="submit">
+                    Add Data
+                  </Button>
+                </Form.Item>
+              </Form>
+            </Modal>
+            <Modal
+              title="Delete Data"
+              visible={deleteModalState}
+              onOk={handleDeleteElementModal}
+              onCancel={handleDeleteElementModal}>
+              <Title level={2}>
+                Are you sure you want to delete this entry?
+              </Title>
+              <Button
+                style={{
+                  marginTop: "15px",
+                  backgroundColor: "red",
+                  color: "white",
+                  borderRadius: "10px",
+                }}
+                onClick={deleteWithConfirmation}
+                block>
+                DELETE
+              </Button>
+            </Modal>
+            <Modal
+              title="Delete Element"
+              visible={elementDeleteModal}
+              onOk={handleElementDeletionModal}
+              onCancel={handleElementDeletionModal}>
+              <Title level={2}>
+                Are you sure you want to delete this element ({elementToDelete})
+                ?
+              </Title>
+              <Button
+                style={{
+                  marginTop: "15px",
+                  backgroundColor: "red",
+                  color: "white",
+                  borderRadius: "10px",
+                }}
+                onClick={confirmDeleteElement}
+                block>
+                DELETE
+              </Button>
+            </Modal>
+            <Modal
+              title="Update Data"
+              visible={dataUpdateModal}
+              onOk={handleDataUpdateModal}
+              onCancel={handleDataUpdateModal}>
+              <Title level={3}>
+                Current value:
+                <span
+                  style={{
+                    fontSize: "1.1rem",
+                    color: "#696969",
+                    marginLeft: "10px",
+                  }}>
+                  {dataValue}
+                </span>
+              </Title>
+              <Form
+                layout="vertical"
+                form={updateDataForm}
+                onFinish={onFinishUpdateData}>
+                <Form.Item
+                  label="Input new value:"
+                  name="data"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input data",
+                    },
+                  ]}>
+                  <Input />
+                </Form.Item>
 
-                  <Form.Item>
-                    <Button
-                      style={{
-                        marginTop: "15px",
-                        backgroundColor: "#638165",
-                        color: "white",
-                        borderRadius: "10px",
-                      }}
-                      htmlType="submit"
-                      block>
-                      Update
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </Modal>
+                <Form.Item>
+                  <Button
+                    style={{
+                      marginTop: "15px",
+                      backgroundColor: "#638165",
+                      color: "white",
+                      borderRadius: "10px",
+                    }}
+                    htmlType="submit"
+                    block>
+                    Update
+                  </Button>
+                </Form.Item>
+              </Form>
+            </Modal>
+            <Row gutter={[16, 16]}>
               {model[0].elements.map((element) => {
                 let currentElement = Object.entries(element)[0][0];
                 return (
-                  <Card
-                    title={`element name: ${Object.entries(element)[0][0]}`}
-                    bordered={false}
-                    style={{ width: "100vw" }}
-                    key={Object.entries(element)[0][0]}>
-                    <Collapse
-                    //   onChange={showData}
-                    >
-                      <Panel header="Show Data" key="1">
-                        <Button
-                          onClick={() => {
-                            handleDataCreationModal();
-                            setElementNameF(Object.entries(element)[0][0]);
-                          }}>
-                          Add Data
-                        </Button>
-
-                        <Title level={3}>Existing Data:</Title>
-                        {Object.entries(element)[0][1].data.map((entry) => {
-                          return (
-                            <Card
-                              title={`data id: ${entry.id}`}
-                              bordered={false}
-                              style={{ width: "100%" }}
-                              key={entry.id}>
-                              {console.log(`data valuee`, entry.value)}
-                              <p> data value: </p>
-                              <p> {entry.value} </p>
-                              <Button
+                  <Col
+                    key={Object.entries(element)[0][0]}
+                    xs={24}
+                    sm={24}
+                    md={12}
+                    lg={8}
+                    style={{ width: "100%" }}>
+                    <Card
+                      title={`element name: ${Object.entries(element)[0][0]}`}
+                      bordered={true}>
+                      <Collapse
+                        style={{
+                          background:
+                            "linear-gradient(90deg, white 0%, #364d79 300%)",
+                          marginBottom: "15px",
+                        }}>
+                        <Panel header="API endpoints for this element" key="1">
+                          <hr />
+                          <Title level={5}>Get Element </Title>
+                          <p>
+                            <strong>Route :</strong>{" "}
+                            https://vicaty-api.herokuapp.com/user/element/getSingle/
+                            {props.match.params.modelId}/
+                            {Object.entries(element)[0][0]}
+                          </p>
+                          <p>
+                            <strong>Request Type :</strong> POST
+                          </p>
+                          <p>
+                            <strong>Request Body :</strong> userId : *your user
+                            Id*
+                          </p>
+                          <hr />
+                          <Title level={5}>Delete Element </Title>
+                          <p>
+                            <strong>Route :</strong>{" "}
+                            https://vicaty-api.herokuapp.com/user/element/delete/
+                            {props.match.params.modelId}/
+                            {Object.entries(element)[0][0]}
+                          </p>
+                          <p>
+                            <strong>Request Type :</strong> POST
+                          </p>
+                          <p>
+                            <strong>Request Body :</strong> userId : *your user
+                            Id*
+                          </p>
+                          <hr />
+                          <Title level={5}>Add Data</Title>
+                          <p>
+                            <strong>Route :</strong>{" "}
+                            https://vicaty-api.herokuapp.com/user/element/addSingle/
+                            {props.match.params.modelId}/
+                            {Object.entries(element)[0][0]}
+                          </p>
+                          <p>
+                            <strong>Request Type :</strong> POST
+                          </p>
+                          <p>
+                            <strong>Request Body :</strong> userId : *your user
+                            || value: *your new data value*
+                          </p>
+                        </Panel>
+                      </Collapse>
+                      <Button
+                        style={{ backgroundColor: "#364D78", color: "white" }}
+                        onClick={() => {
+                          handleDataCreationModal();
+                          setElementNameF(Object.entries(element)[0][0]);
+                        }}>
+                        Add Data
+                      </Button>
+                      <Button
+                        style={{
+                          backgroundColor: "red",
+                          color: "white",
+                          marginBottom: "20px",
+                        }}
+                        onClick={() => {
+                          setElementToDeleteF(Object.entries(element)[0][0]);
+                          handleElementDeletionModal();
+                        }}>
+                        Delete Element
+                      </Button>
+                      <Collapse>
+                        <Panel header="Show Data" key="1">
+                          <Title level={3}>Data</Title>
+                          {Object.entries(element)[0][1].data.map((entry) => {
+                            return (
+                              <Card
+                                title={
+                                  <Title level={5}>Data ID: {entry.id}</Title>
+                                }
+                                bordered={true}
                                 style={{
-                                  margin: "15px 0",
-                                  backgroundColor: "#638165",
-                                  color: "white",
+                                  width: "100%",
+                                  borderTop: "1px solid #364D78",
                                 }}
-                                onClick={() => {
-                                  updateElementModal(
-                                    currentElement,
-                                    entry.id,
-                                    entry.value
-                                  );
-                                  handleDataUpdateModal();
-                                }}>
-                                Modify
-                              </Button>
-                              <Button
-                                style={{
-                                  margin: "15px 0",
-                                  backgroundColor: "white",
-                                  color: "red",
-                                }}
-                                onClick={async () => {
-                                  deleteElementModal(currentElement, entry.id);
-                                }}>
-                                Delete
-                              </Button>
-                            </Card>
-                          );
-                        })}
-                      </Panel>
-                    </Collapse>
-                  </Card>
+                                key={entry.id}>
+                                <Collapse
+                                  style={{
+                                    background:
+                                      "linear-gradient(90deg, white 0%, #364d79 300%)",
+                                    marginBottom: "15px",
+                                  }}>
+                                  <Panel
+                                    header="API endpoints for this data"
+                                    key="1">
+                                    <hr />
+                                    <Title level={5}>Delete Data </Title>
+                                    <p>
+                                      <strong>Route :</strong>{" "}
+                                      https://vicaty-api.herokuapp.com/user/element/deleteSingle/
+                                      {props.match.params.modelId}/
+                                      {Object.entries(element)[0][0]}/{entry.id}
+                                    </p>
+                                    <p>
+                                      <strong>Request Type :</strong> POST
+                                    </p>
+                                    <p>
+                                      <strong>Request Body :</strong> userId :
+                                      *your user Id*
+                                    </p>
+                                    <hr />
+                                    <Title level={5}>Update Data</Title>
+                                    <p>
+                                      <strong>Route :</strong>{" "}
+                                      https://vicaty-api.herokuapp.com/user/element/updateSingle/
+                                      {props.match.params.modelId}/
+                                      {Object.entries(element)[0][0]}/{entry.id}
+                                    </p>
+                                    <p>
+                                      <strong>Request Type :</strong> PUT
+                                    </p>
+                                    <p>
+                                      <strong>Request Body :</strong> userId :
+                                      *your user || value: *your new data value*
+                                    </p>
+                                  </Panel>
+                                </Collapse>
+                                <p>
+                                  {" "}
+                                  <Title level={5}>Data value:</Title>{" "}
+                                </p>
+                                <p> {entry.value} </p>
+                                <Button
+                                  style={{
+                                    margin: "15px 0",
+                                    backgroundColor: "#364D78",
+                                    color: "white",
+                                  }}
+                                  onClick={() => {
+                                    updateElementModal(
+                                      currentElement,
+                                      entry.id,
+                                      entry.value
+                                    );
+                                    handleDataUpdateModal();
+                                  }}>
+                                  Modify
+                                </Button>
+                                <Button
+                                  style={{
+                                    margin: "15px 0",
+                                    backgroundColor: "red",
+                                    color: "white",
+                                  }}
+                                  onClick={async () => {
+                                    deleteElementModal(
+                                      currentElement,
+                                      entry.id
+                                    );
+                                  }}>
+                                  Delete
+                                </Button>
+                              </Card>
+                            );
+                          })}
+                        </Panel>
+                      </Collapse>
+                    </Card>
+                  </Col>
                 );
               })}
             </Row>

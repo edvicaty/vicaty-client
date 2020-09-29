@@ -14,7 +14,8 @@ const Home = () => {
     <div>
       <>
         <center>
-          <div style={{ width: "50vw", marginBottom: "40px" }}>
+          <div
+            style={{ width: "50vw", marginBottom: "40px", marginTop: "40px" }}>
             <Title level={1}>Vicaty </Title>
             <Text> An API builder made with love</Text>
           </div>

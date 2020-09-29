@@ -24,6 +24,15 @@ export const createElement = async (elementName, modelId, userId) => {
   });
   return updatedModel;
 };
+export const deleteElement = async (elementName, modelId, userId) => {
+  const updatedModel = await userService.post(
+    `/element/delete/${modelId}/${elementName}`,
+    {
+      userId,
+    }
+  );
+  return updatedModel;
+};
 
 export const addSingle = async ({ data }, modelId, elementName, userId) => {
   const updatedElement = await userService.post(

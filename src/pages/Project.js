@@ -216,18 +216,18 @@ const Project = (props) => {
           <div
             style={{
               width: "100vw",
-              paddingLeft: "15vw",
-              paddingRight: "15vw",
-              marginTop: "15px",
+              padding: "30px 15vw",
               background: "linear-gradient(90deg, #364d79 0%, white 220%)",
-
               color: "white",
             }}>
             <Title style={{ color: "white" }} level={1}>
-              {props.match.params.projectName}'s MODELS
+              {props.match.params.projectName}
             </Title>
             <Title style={{ color: "white" }} level={3}>
-              {props.match.params.projectName}'s MODELS
+              MODEL Id: {props.match.params.projectId}
+            </Title>
+            <Title style={{ color: "white" }} level={3}>
+              MODELS
             </Title>
             <h3 style={{ color: "white" }}>
               Here you can see all your models corresponding to the
@@ -244,119 +244,168 @@ const Project = (props) => {
               block>
               Create New Model!
             </Button>
+            <Collapse
+              style={{
+                background: "linear-gradient(90deg, white 0%, #364d79 220%)",
+                marginBottom: "15px",
+              }}>
+              <Panel header="Show API endpoint to fetch Project" key="1">
+                <p>
+                  <strong>Route :</strong>{" "}
+                  https://vicaty-api.herokuapp.com/user/project/
+                  {props.match.params.projectId}
+                </p>
+                <p>
+                  <strong>Request Type :</strong> POST
+                </p>
+                <p>
+                  <strong>Request Body :</strong> userId : *your user Id*
+                </p>
+              </Panel>
+            </Collapse>
           </div>
           <div style={{ margin: "20px" }}>
-            {project[0].createdModels.map((model) => {
-              return (
-                <Card
-                  key={model._id}
-                  title={model.createdModelName}
-                  bordered={true}
-                  style={{
-                    marginBottom: "40px",
-                    borderTop: "3px solid #364d79",
-                  }}>
-                  <p>
-                    <strong>Model description:</strong> {model.description}
-                  </p>
-                  <Button
-                    style={{
-                      margin: "15px 0",
-                      backgroundColor: "white",
-                      color: "#364d79",
-                      width: "40vw",
-                    }}
-                    onClick={async () => {
-                      await updateModelForm.resetFields();
-                      await setModelToUpdateF(
-                        model.createdModelName,
-                        model._id,
-                        model.description
-                      );
-                      handleModelUpdateModal();
-                    }}
-                    block>
-                    Update Model's name and description
-                  </Button>
-                  <p>
-                    <strong>Model id:</strong> {model._id}
-                  </p>
-                  <p>
-                    <strong>Creation date:</strong>{" "}
-                    {model.created_at.slice(0, 10)}
-                  </p>
-                  <p>
-                    <strong>Last updated:</strong>{" "}
-                    {model.updated_at.slice(0, 10)}
-                  </p>
-                  <Button
-                    style={{
-                      width: "30vw",
-                      margin: "15px 0",
-                      backgroundColor: "#364d79",
-                      color: "white",
-                    }}>
-                    <Link to={`/model/${model.createdModelName}/${model._id}`}>
-                      Go to model
-                    </Link>
-                  </Button>
-                  <Button
-                    style={{
-                      width: "30vw",
-                      margin: "15px 0",
-                      backgroundColor: "red",
-                      color: "white",
-                    }}
-                    onClick={() => {
-                      setModelF(model._id);
-                      handleDeleteModal();
-                    }}>
-                    DELETE
-                  </Button>
-                  <Collapse
-                    style={{
-                      background:
-                        "linear-gradient(90deg, white 0%, #364d79 220%)",
-                    }}>
-                    <Panel header="API's endpoints" key="1">
-                      {Object.entries(model.api).map((object) => {
-                        return (
-                          <Card
-                            style={{
-                              background:
-                                "linear-gradient(90deg, white 0%, #364d79 220%)",
-                            }}
-                            key={object[0]}>
-                            <p>
-                              <strong style={{ width: "100%" }}>
-                                Endpoint function:{" "}
-                              </strong>
-                              {object[0]}
-                            </p>
-                            <p>
-                              <strong style={{ width: "100%" }}>
-                                Request:{" "}
-                              </strong>
-                              {object[1].reqType}
-                            </p>
-                            <p>
-                              <strong style={{ width: "100%" }}>Route: </strong>{" "}
-                              {object[1].route}
-                            </p>
-                            <p>
-                              <strong style={{ width: "100%" }}>
-                                Request body elements:{" "}
-                              </strong>
-                              {object[1].body}
-                            </p>
-                          </Card>
-                        );
-                      })}
-                    </Panel>
-                  </Collapse>
-                </Card>
-              );
-            })}
+            <Row gutter={[16, 16]}>
+              {project[0].createdModels.map((model) => {
+                return (
+                  <Col key={project._id} xs={24} sm={24} md={12} lg={8}>
+                    <Card
+                      key={model._id}
+                      title={model.createdModelName}
+                      bordered={true}
+                      style={{
+                        marginBottom: "40px",
+                        borderTop: "3px solid #364d79",
+                      }}>
+                      <p>
+                        <strong>Model description:</strong> {model.description}
+                      </p>
+                      <Button
+                        style={{
+                          margin: "15px 0",
+                          backgroundColor: "white",
+                          color: "#364d79",
+                          width: "100%",
+                        }}
+                        onClick={async () => {
+                          await updateModelForm.resetFields();
+                          await setModelToUpdateF(
+                            model.createdModelName,
+                            model._id,
+                            model.description
+                          );
+                          handleModelUpdateModal();
+                        }}
+                        block>
+                        Update Model's name and description
+                      </Button>
+                      <p>
+                        <strong>Model id:</strong> {model._id}
+                      </p>
+                      <p>
+                        <strong>Creation date:</strong>{" "}
+                        {model.created_at.slice(0, 10)}
+                      </p>
+                      <p>
+                        <strong>Last updated:</strong>{" "}
+                        {model.updated_at.slice(0, 10)}
+                      </p>
+                      <Collapse
+                        style={{
+                          background:
+                            "linear-gradient(90deg, white 0%, #364d79 220%)",
+                          marginBottom: "15px",
+                        }}>
+                        <Panel header="Show API to fetch this model" key="1">
+                          <p>
+                            <strong>Route :</strong>{" "}
+                            https://vicaty-api.herokuapp.com/user/createdModel/
+                            {model._id}
+                          </p>
+                          <p>
+                            <strong>Request Type :</strong> POST
+                          </p>
+                          <p>
+                            <strong>Request Body :</strong> userId : *your user
+                            Id*
+                          </p>
+                        </Panel>
+                      </Collapse>
+                      <Button
+                        style={{
+                          width: "100%",
+                          margin: "15px 0",
+                          backgroundColor: "#364d79",
+                          color: "white",
+                        }}>
+                        <Link
+                          to={`/model/${model.createdModelName}/${model._id}`}>
+                          Go to model
+                        </Link>
+                      </Button>
+                      <Button
+                        style={{
+                          width: "100%",
+                          margin: "15px 0",
+                          backgroundColor: "red",
+                          color: "white",
+                        }}
+                        onClick={() => {
+                          setModelF(model._id);
+                          handleDeleteModal();
+                        }}>
+                        DELETE
+                      </Button>
+                      {/* <Collapse
+                        style={{
+                          background:
+                            "linear-gradient(90deg, white 0%, #364d79 220%)",
+                        }}>
+                        <Panel
+                          header="All available API's endpoints for current model"
+                          key="1">
+                          {Object.entries(model.api).map((object) => {
+                            return (
+                              <Card
+                                style={{
+                                  background:
+                                    "linear-gradient(90deg, white 0%, #364d79 220%)",
+                                }}
+                                key={object[0]}>
+                                <p>
+                                  <strong style={{ width: "100%" }}>
+                                    Endpoint function:{" "}
+                                  </strong>
+                                  {object[0]}
+                                </p>
+                                <p>
+                                  <strong style={{ width: "100%" }}>
+                                    Request:{" "}
+                                  </strong>
+                                  {object[1].reqType}
+                                </p>
+                                <p>
+                                  <strong style={{ width: "100%" }}>
+                                    Route:{" "}
+                                  </strong>{" "}
+                                  {object[1].route}
+                                </p>
+                                <p>
+                                  <strong style={{ width: "100%" }}>
+                                    Request body elements:{" "}
+                                  </strong>
+                                  {object[1].body}
+                                </p>
+                              </Card>
+                            );
+                          })}
+                        </Panel>
+                      </Collapse> */}
+                    </Card>
+                  </Col>
+                );
+              })}
+            </Row>
           </div>
         </center>
       </div>
