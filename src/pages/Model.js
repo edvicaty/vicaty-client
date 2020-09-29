@@ -1,6 +1,14 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { Redirect } from "react-router-dom";
 import {
+  ApartmentOutlined,
+  AppstoreOutlined,
+  BlockOutlined,
+  BorderOutlined,
+  FileTextOutlined,
+} from "@ant-design/icons";
+
+import {
   Button,
   Typography,
   Input,
@@ -11,6 +19,7 @@ import {
   Modal,
   Collapse,
   notification,
+  Breadcrumb,
 } from "antd";
 import axios from "axios";
 import { updatePhoto, getCurrentUser } from "../services/auth";
@@ -215,19 +224,47 @@ const Model = (props) => {
               background: "linear-gradient(90deg, #364d79 0%, white 220%)",
               color: "white",
             }}>
+            <Breadcrumb
+              style={{ position: "relative", bottom: "20px" }}
+              separator="">
+              <Breadcrumb.Item>
+                <Link style={{ color: "white" }} to="/profile">
+                  <ApartmentOutlined style={{ color: "white" }} /> Projects
+                </Link>
+              </Breadcrumb.Item>
+              <span style={{ color: "white" }}>{`   >   `}</span>
+              <Breadcrumb.Item>
+                <Link
+                  style={{ color: "white" }}
+                  to={`/project/${props.match.params.projectName}/${props.match.params.projectId}`}>
+                  <AppstoreOutlined style={{ color: "white" }} />
+                  {` `}
+                  {props.match.params.projectName}
+                </Link>
+              </Breadcrumb.Item>
+              <span style={{ color: "white" }}>{`   >   `}</span>
+              <Breadcrumb.Item>
+                <BlockOutlined style={{ color: "white" }} />
+                <span style={{ color: "white" }}>
+                  {` `}
+                  {props.match.params.modelName}
+                </span>
+              </Breadcrumb.Item>
+            </Breadcrumb>
             <Title style={{ color: "white" }} level={1}>
-              {props.match.params.modelName}
+              <BlockOutlined /> {props.match.params.modelName}
             </Title>
             <Title style={{ color: "white" }} level={3}>
               MODEL Id: {props.match.params.modelId}
             </Title>
-            <Title style={{ color: "white" }} level={3}>
-              ELEMENTS
-            </Title>
+
             <h3 style={{ color: "white" }}>
-              Here you can see all your elements corresponding to the{" "}
-              {props.match.params.modelName} model. Click below to create a new
-              one!
+              Here you can see all your {`  `}
+              <span style={{ fontSize: "1.8rem", fontWeight: "bold" }}>
+                elements
+              </span>
+              {`  `} corresponding to the {props.match.params.modelName} model.
+              Click below to create a new one!
             </h3>
             <Button
               style={{
@@ -407,7 +444,12 @@ const Model = (props) => {
                     lg={8}
                     style={{ width: "100%" }}>
                     <Card
-                      title={`element name: ${Object.entries(element)[0][0]}`}
+                      title={
+                        <>
+                          <BorderOutlined />
+                          {` `} element name: {Object.entries(element)[0][0]}
+                        </>
+                      }
                       bordered={true}>
                       <Collapse
                         style={{
@@ -484,13 +526,21 @@ const Model = (props) => {
                         Delete Element
                       </Button>
                       <Collapse>
-                        <Panel header="Show Data" key="1">
-                          <Title level={3}>Data</Title>
+                        <Panel
+                          header={
+                            <>
+                              <FileTextOutlined />
+                              {` `} Show data
+                            </>
+                          }
+                          key="1">
                           {Object.entries(element)[0][1].data.map((entry) => {
                             return (
                               <Card
                                 title={
-                                  <Title level={5}>Data ID: {entry.id}</Title>
+                                  <Title level={5}>
+                                    <FileTextOutlined /> Data ID: {entry.id}
+                                  </Title>
                                 }
                                 bordered={true}
                                 style={{
@@ -539,10 +589,7 @@ const Model = (props) => {
                                     </p>
                                   </Panel>
                                 </Collapse>
-                                <p>
-                                  {" "}
-                                  <Title level={5}>Data value:</Title>{" "}
-                                </p>
+                                <Title level={5}>Data value:</Title>{" "}
                                 <p> {entry.value} </p>
                                 <Button
                                   style={{

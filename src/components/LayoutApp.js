@@ -1,5 +1,13 @@
 import React, { useContext, useState } from "react";
 import {
+  ApartmentOutlined,
+  HomeOutlined,
+  FileOutlined,
+  LogoutOutlined,
+  LoginOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
+import {
   Layout,
   Menu,
   Modal,
@@ -181,9 +189,13 @@ const LayoutApp = ({ children }) => {
           style={{ width: "100vw", position: "absolute", right: "0" }}
           mode="horizontal">
           <Menu.Item key="1">
-            <Link to="/">Home</Link>
+            <Link to="/">
+              <HomeOutlined />
+              Home
+            </Link>
           </Menu.Item>
           <Menu.Item onClick={handleHelpModal} key="6">
+            <FileOutlined />
             Documentation
           </Menu.Item>
 
@@ -191,20 +203,26 @@ const LayoutApp = ({ children }) => {
             <>
               <Menu.Item key="5">
                 <Link to="/profile">
+                  <ApartmentOutlined />
                   {user.username.toUpperCase()}'s Projects
                 </Link>
               </Menu.Item>
               <Menu.Item onClick={setlogout} key="4">
+                <LogoutOutlined />
                 Logout
               </Menu.Item>
             </>
           ) : (
             <>
               <Menu.Item key="2">
-                <Link to="/login">Login</Link>
+                <Link to="/login">
+                  <LoginOutlined /> Login
+                </Link>
               </Menu.Item>
               <Menu.Item key="3">
-                <Link to="/signup">Signup</Link>
+                <Link to="/signup">
+                  <UserAddOutlined /> Signup
+                </Link>
               </Menu.Item>
             </>
           )}

@@ -18,7 +18,10 @@ const router = () => {
           <Route component={Signup} path="/signup" />
           <Route component={Profile} path="/profile" />
           <Route component={Project} path="/project/:projectName/:projectId" />
-          <Route component={Model} path="/model/:modelName/:modelId" />
+          <Route
+            component={Model}
+            path="/model/:modelName/:modelId/:projectName/:projectId"
+          />
         </Switch>
       </LayoutApp>
     </Router>

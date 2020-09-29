@@ -3,6 +3,7 @@ import { Form, Input, Button, Cascader, Typography, notification } from "antd";
 import { signup } from "../services/auth";
 import { Redirect } from "react-router-dom";
 import { Context } from "../context";
+import { UserAddOutlined } from "@ant-design/icons";
 const { Title, Text } = Typography;
 
 const Signup = ({ history }) => {
@@ -25,8 +26,14 @@ const Signup = ({ history }) => {
   }
 
   return !user ? (
-    <Form layout="vertical" form={form} onFinish={onFinish}>
-      <Title level={1}>Create Account</Title>
+    <Form
+      style={{ margin: "40px 50px" }}
+      layout="vertical"
+      form={form}
+      onFinish={onFinish}>
+      <Title level={1}>
+        <UserAddOutlined /> Create Account
+      </Title>
 
       <Form.Item
         label="User Name"

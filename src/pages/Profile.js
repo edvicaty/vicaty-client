@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
+import { ApartmentOutlined, AppstoreOutlined } from "@ant-design/icons";
 import {
   Button,
   Typography,
@@ -12,6 +13,7 @@ import {
   Collapse,
   Timeline,
   Image,
+  Breadcrumb,
 } from "antd";
 import axios from "axios";
 import { updatePhoto, getCurrentUser } from "../services/auth";
@@ -245,7 +247,7 @@ const Profile = () => {
             borderRadius: "3px",
           }}>
           <Title style={{ color: "white" }} level={1}>
-            Projects Schemas
+            <ApartmentOutlined /> Projects Schemas
           </Title>
           <Title style={{ color: "white" }} level={3}>
             Main Content of your API
@@ -299,7 +301,14 @@ const Profile = () => {
             {projects?.map((project) => {
               return (
                 <Col key={project._id} xs={24} sm={24} md={12} lg={8}>
-                  <Card title={project.projectName} bordered={false}>
+                  <Card
+                    title={
+                      <>
+                        <AppstoreOutlined /> {` `}
+                        {project.projectName}
+                      </>
+                    }
+                    bordered={false}>
                     <Button
                       style={{
                         margin: "15px 0",

@@ -3,6 +3,7 @@ import { Form, Input, Button, Cascader, Typography, notification } from "antd";
 import { login } from "../services/auth";
 import { Redirect } from "react-router-dom";
 import { Context } from "../context";
+import { LoginOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 
@@ -27,8 +28,14 @@ const Signup = ({ history }) => {
   }
 
   return !user ? (
-    <Form layout="vertical" form={form} onFinish={onFinish}>
-      <Title level={1}>LOGIN</Title>
+    <Form
+      style={{ margin: "40px 50px" }}
+      layout="vertical"
+      form={form}
+      onFinish={onFinish}>
+      <Title level={1}>
+        <LoginOutlined /> LOGIN
+      </Title>
       <Form.Item
         label="User Name"
         name="username"

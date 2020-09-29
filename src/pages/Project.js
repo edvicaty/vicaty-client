@@ -1,6 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import {
+  ApartmentOutlined,
+  AppstoreOutlined,
+  BlockOutlined,
+} from "@ant-design/icons";
+import {
   Button,
   Typography,
   Input,
@@ -10,6 +15,7 @@ import {
   Form,
   Modal,
   Collapse,
+  Breadcrumb,
 } from "antd";
 import axios from "axios";
 import { updatePhoto, getCurrentUser } from "../services/auth";
@@ -220,17 +226,39 @@ const Project = (props) => {
               background: "linear-gradient(90deg, #364d79 0%, white 220%)",
               color: "white",
             }}>
+            <Breadcrumb
+              style={{ position: "relative", bottom: "20px" }}
+              separator="">
+              <Breadcrumb.Item>
+                <Link style={{ color: "white" }} to="/profile">
+                  <ApartmentOutlined style={{ color: "white" }} /> Projects
+                </Link>
+              </Breadcrumb.Item>
+              <span style={{ color: "white" }}>{`   >   `}</span>
+              <Breadcrumb.Item>
+                <Link
+                  style={{ color: "white" }}
+                  to={`/project/${props.match.params.projectName}/${props.match.params.projectId}`}>
+                  <AppstoreOutlined style={{ color: "white" }} />
+                  {` `}
+                  {props.match.params.projectName}
+                </Link>
+              </Breadcrumb.Item>
+            </Breadcrumb>
             <Title style={{ color: "white" }} level={1}>
-              {props.match.params.projectName}
+              <AppstoreOutlined /> {props.match.params.projectName}
             </Title>
             <Title style={{ color: "white" }} level={3}>
-              MODEL Id: {props.match.params.projectId}
+              PROJECT Id: {props.match.params.projectId}
             </Title>
-            <Title style={{ color: "white" }} level={3}>
-              MODELS
-            </Title>
+
             <h3 style={{ color: "white" }}>
-              Here you can see all your models corresponding to the
+              Here you can see all your {`  `}
+              <span style={{ fontSize: "1.8rem", fontWeight: "bold" }}>
+                models
+              </span>
+              {"  "}
+              corresponding to the
               {props.match.params.projectName} project. click below to create a
               new one!
             </h3>
@@ -268,10 +296,16 @@ const Project = (props) => {
             <Row gutter={[16, 16]}>
               {project[0].createdModels.map((model) => {
                 return (
-                  <Col key={project._id} xs={24} sm={24} md={12} lg={8}>
+                  <Col key={model._id} xs={24} sm={24} md={12} lg={8}>
                     <Card
                       key={model._id}
-                      title={model.createdModelName}
+                      title={
+                        <>
+                          <BlockOutlined />
+                          {` `}
+                          {model.createdModelName}
+                        </>
+                      }
                       bordered={true}
                       style={{
                         marginBottom: "40px",
@@ -339,7 +373,7 @@ const Project = (props) => {
                           color: "white",
                         }}>
                         <Link
-                          to={`/model/${model.createdModelName}/${model._id}`}>
+                          to={`/model/${model.createdModelName}/${model._id}/${props.match.params.projectName}/${props.match.params.projectId}`}>
                           Go to model
                         </Link>
                       </Button>
