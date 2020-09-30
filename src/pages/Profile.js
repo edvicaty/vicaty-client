@@ -14,6 +14,7 @@ import {
   Timeline,
   Image,
   Breadcrumb,
+  Spin,
 } from "antd";
 import axios from "axios";
 import { updatePhoto, getCurrentUser } from "../services/auth";
@@ -45,11 +46,17 @@ const Profile = () => {
 
   const [duplicationModalState, setDuplicationModalState] = useState(false);
   const [projectToDuplicate, setProjectToDuplicate] = useState(`null`);
+  const [loadingModal, setLoadingModal] = useState(false);
+
   //load data functions
   useEffect(() => {
     const getProjects = async () => {
+      await handleLoadingModalTrue();
+
       const { data } = await viewProjects();
       setProjects(data);
+      await handleLoadingModalFalse();
+
       if (fetchedProjects === false) {
         setFetchedProjects(true);
       }
@@ -58,7 +65,11 @@ const Profile = () => {
   }, [fetchedProjects]);
   //Form functions
   async function onFinish(values) {
-    createProject(values);
+    await handleLoadingModalTrue();
+
+    await createProject(values);
+    await handleLoadingModalFalse();
+
     setFetchedProjects(false);
     form.resetFields();
     handleModal();
@@ -74,8 +85,12 @@ const Profile = () => {
   function setProjectF(projectId) {
     setProjectToDelete(projectId);
   }
-  function deleteProjectConfirmed() {
-    const message = deleteProject(projectToDelete);
+  async function deleteProjectConfirmed() {
+    await handleLoadingModalTrue();
+
+    const message = await deleteProject(projectToDelete);
+    await handleLoadingModalFalse();
+
     setFetchedProjects(false);
     handleDeleteProject();
   }
@@ -86,8 +101,12 @@ const Profile = () => {
     setUpdateModalState(!updateModalState);
     updateForm.resetFields();
   }
-  function onFinishUpdate(values) {
-    editProject(projectToUpdate.projectId, values.projectName);
+  async function onFinishUpdate(values) {
+    await handleLoadingModalTrue();
+
+    await editProject(projectToUpdate.projectId, values.projectName);
+    await handleLoadingModalFalse();
+
     updateForm.resetFields();
     handleUpdateModal();
     setFetchedProjects(false);
@@ -103,30 +122,50 @@ const Profile = () => {
   }
 
   async function onFinishDuplication(values) {
+    await handleLoadingModalTrue();
+
     await duplicateProject(projectToDuplicate.projectId, values.projectName);
+    await handleLoadingModalFalse();
+
     duplicateForm.resetFields();
     handleDuplicationModal();
     setFetchedProjects(false);
   }
+  //loading modal
+  async function handleLoadingModalTrue() {
+    await setLoadingModal(true);
+  }
+  async function handleLoadingModalFalse() {
+    await setLoadingModal(false);
+  }
 
   //image uploader
-  const uploadImageUrl = async (e) => {
-    const data = new FormData();
-    data.append("file", e.target.files[0]);
-    data.append("upload_preset", "lab-ironprofile-ahe");
-    const {
-      data: { secure_url },
-    } = await axios.post(
-      "https://api.cloudinary.com/v1_1/vicaty/image/upload",
-      data
-    );
-    await updatePhoto(secure_url);
-    const { user } = await getCurrentUser();
-    loginUser(user);
-  };
+  // const uploadImageUrl = async (e) => {
+  //   const data = new FormData();
+  //   data.append("file", e.target.files[0]);
+  //   data.append("upload_preset", "lab-ironprofile-ahe");
+  //   const {
+  //     data: { secure_url },
+  //   } = await axios.post(
+  //     "https://api.cloudinary.com/v1_1/vicaty/image/upload",
+  //     data
+  //   );
+  //   await updatePhoto(secure_url);
+  //   const { user } = await getCurrentUser();
+  //   loginUser(user);
+  // };
   return user ? (
     <div>
       <center>
+        <Modal
+          title="Loading... Please wait"
+          visible={loadingModal}
+          onOk={handleLoadingModalFalse}
+          onCancel={handleLoadingModalFalse}
+          okButtonProps={{ hidden: true }}
+          cancelButtonProps={{ hidden: true }}>
+          <Spin size="large" />
+        </Modal>
         <Modal
           title="Create new Project Schema"
           visible={modalState}

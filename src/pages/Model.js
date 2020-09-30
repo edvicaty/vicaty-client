@@ -20,6 +20,7 @@ import {
   Collapse,
   notification,
   Breadcrumb,
+  Spin,
 } from "antd";
 import axios from "axios";
 import { updatePhoto, getCurrentUser } from "../services/auth";
@@ -49,6 +50,7 @@ const Model = (props) => {
   const [valueId, setValueId] = useState(null);
   const [dataUpdateModal, setDataUpdateModal] = useState(false);
   const [dataValue, setDataValue] = useState(null);
+  const [loadingModal, setLoadingModal] = useState(false);
 
   const [elementToDelete, setElementToDelete] = useState(null);
   const [elementDeleteModal, setElementDeleteModal] = useState(false);
@@ -63,8 +65,11 @@ const Model = (props) => {
   //load data functions
   useEffect(() => {
     const getModel = async () => {
+      await handleLoadingModalTrue();
+
       const { data } = await viewModel(props.match.params.modelId);
       setModel([data]);
+      await handleLoadingModalFalse();
 
       if (fetchedModel === false) {
         setFetchedModel(true);
@@ -75,14 +80,20 @@ const Model = (props) => {
 
   //Form functions
   async function onFinish({ elementName }) {
+    await handleLoadingModalTrue();
+
     const newElem = await createElement(
       elementName,
       props.match.params.modelId,
       user._id
     );
     if (!newElem.data) {
+      await handleLoadingModalFalse();
+
       openNotificationWithIcon(`warning`);
     } else {
+      await handleLoadingModalFalse();
+
       form.resetFields();
       setFetchedModel(false);
       handleModal();
@@ -98,7 +109,10 @@ const Model = (props) => {
     dataForm.resetFields();
   }
   async function onFinishData(value) {
-    addSingle(value, props.match.params.modelId, elementName, user._id);
+    await handleLoadingModalTrue();
+
+    await addSingle(value, props.match.params.modelId, elementName, user._id);
+    await handleLoadingModalFalse();
 
     setFetchedModel(false);
     dataForm.resetFields();
@@ -116,14 +130,15 @@ const Model = (props) => {
     setDeleteModalState(!deleteModalState);
     form.resetFields();
   }
-  function deleteWithConfirmation() {
-    console.log(`element to deleteee`, elementName, valueId);
-    deleteSingleData(
+  async function deleteWithConfirmation() {
+    await handleLoadingModalTrue();
+    await deleteSingleData(
       props.match.params.modelId,
       elementName,
       valueId,
       user._id
     );
+    await handleLoadingModalFalse();
     setFetchedModel(false);
     form.resetFields();
 
@@ -138,14 +153,16 @@ const Model = (props) => {
     setDataUpdateModal(!dataUpdateModal);
     updateDataForm.resetFields();
   }
-  function onFinishUpdateData(value) {
-    updateSingle(
+  async function onFinishUpdateData(value) {
+    await handleLoadingModalTrue();
+    await updateSingle(
       props.match.params.modelId,
       elementName,
       valueId,
       value,
       user._id
     );
+    await handleLoadingModalFalse();
     setFetchedModel(false);
     handleDataUpdateModal();
   }
@@ -159,33 +176,52 @@ const Model = (props) => {
     setElementToDelete(elementName);
   }
 
-  function confirmDeleteElement() {
-    console.log(`elem to dell`, elementToDelete);
-    deleteElement(elementToDelete, props.match.params.modelId, user._id);
+  async function confirmDeleteElement() {
+    await handleLoadingModalTrue();
+    await deleteElement(elementToDelete, props.match.params.modelId, user._id);
+    await handleLoadingModalFalse();
     setFetchedModel(false);
     handleElementDeletionModal();
   }
+
+  //loading modal
+  async function handleLoadingModalTrue() {
+    await setLoadingModal(true);
+  }
+  async function handleLoadingModalFalse() {
+    await setLoadingModal(false);
+  }
+
   //get elements
   //image uploader
-  const uploadImageUrl = async (e) => {
-    const data = new FormData();
-    data.append("file", e.target.files[0]);
-    data.append("upload_preset", "lab-ironprofile-ahe");
-    const {
-      data: { secure_url },
-    } = await axios.post(
-      "https://api.cloudinary.com/v1_1/vicaty/image/upload",
-      data
-    );
+  // const uploadImageUrl = async (e) => {
+  //   const data = new FormData();
+  //   data.append("file", e.target.files[0]);
+  //   data.append("upload_preset", "lab-ironprofile-ahe");
+  //   const {
+  //     data: { secure_url },
+  //   } = await axios.post(
+  //     "https://api.cloudinary.com/v1_1/vicaty/image/upload",
+  //     data
+  //   );
 
-    await updatePhoto(secure_url);
-    const { user } = await getCurrentUser();
-    loginUser(user);
-  };
+  //   await updatePhoto(secure_url);
+  //   const { user } = await getCurrentUser();
+  //   loginUser(user);
+  // };
   return user ? (
     model ? (
       <div>
         <center>
+          <Modal
+            title="Loading... Please wait"
+            visible={loadingModal}
+            onOk={handleLoadingModalFalse}
+            onCancel={handleLoadingModalFalse}
+            okButtonProps={{ hidden: true }}
+            cancelButtonProps={{ hidden: true }}>
+            <Spin size="large" />
+          </Modal>
           <Modal
             title="Create new Element"
             visible={modalState}
@@ -464,7 +500,7 @@ const Model = (props) => {
                             <strong>Route :</strong>{" "}
                             https://vicaty-api.herokuapp.com/user/element/getSingle/
                             {props.match.params.modelId}/
-                            {Object.entries(element)[0][0]}
+                            {Object.entries(element)[0][0].replace(/ /g, "%20")}
                           </p>
                           <p>
                             <strong>Request Type :</strong> POST
@@ -479,7 +515,7 @@ const Model = (props) => {
                             <strong>Route :</strong>{" "}
                             https://vicaty-api.herokuapp.com/user/element/delete/
                             {props.match.params.modelId}/
-                            {Object.entries(element)[0][0]}
+                            {Object.entries(element)[0][0].replace(/ /g, "%20")}
                           </p>
                           <p>
                             <strong>Request Type :</strong> POST
@@ -494,7 +530,7 @@ const Model = (props) => {
                             <strong>Route :</strong>{" "}
                             https://vicaty-api.herokuapp.com/user/element/addSingle/
                             {props.match.params.modelId}/
-                            {Object.entries(element)[0][0]}
+                            {Object.entries(element)[0][0].replace(/ /g, "%20")}
                           </p>
                           <p>
                             <strong>Request Type :</strong> POST
@@ -563,7 +599,11 @@ const Model = (props) => {
                                       <strong>Route :</strong>{" "}
                                       https://vicaty-api.herokuapp.com/user/element/deleteSingle/
                                       {props.match.params.modelId}/
-                                      {Object.entries(element)[0][0]}/{entry.id}
+                                      {Object.entries(element)[0][0].replace(
+                                        / /g,
+                                        "%20"
+                                      )}
+                                      /{entry.id}
                                     </p>
                                     <p>
                                       <strong>Request Type :</strong> POST
@@ -578,7 +618,11 @@ const Model = (props) => {
                                       <strong>Route :</strong>{" "}
                                       https://vicaty-api.herokuapp.com/user/element/updateSingle/
                                       {props.match.params.modelId}/
-                                      {Object.entries(element)[0][0]}/{entry.id}
+                                      {Object.entries(element)[0][0].replace(
+                                        / /g,
+                                        "%20"
+                                      )}
+                                      /{entry.id}
                                     </p>
                                     <p>
                                       <strong>Request Type :</strong> PUT

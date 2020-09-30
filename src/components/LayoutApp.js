@@ -10,6 +10,7 @@ import {
   BlockOutlined,
   BorderOutlined,
   FileTextOutlined,
+  SendOutlined,
 } from "@ant-design/icons";
 import {
   Layout,
@@ -603,7 +604,10 @@ const LayoutApp = ({ children }) => {
           mode="horizontal">
           <Menu.Item key="1">
             <Link to="/">
-              <HomeOutlined />
+              <SendOutlined
+                style={{ color: "#364D78", marginLeft: "5px" }}
+                rotate="90"
+              />
               Home
             </Link>
           </Menu.Item>

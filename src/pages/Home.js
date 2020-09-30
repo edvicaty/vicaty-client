@@ -15,6 +15,7 @@ import {
   HeartOutlined,
   FieldTimeOutlined,
   CodeOutlined,
+  SendOutlined,
 } from "@ant-design/icons";
 const contentStyle = {
   height: "350px",
@@ -36,10 +37,14 @@ const Home = () => {
               fontSize: "3.2rem",
               color: "darkGray",
               position: "relative",
-              right: "54px",
+              right: "53px",
               top: "37px",
             }}>
-            Vicaty
+            Vicaty {` `}{" "}
+            <SendOutlined
+              style={{ color: "#364D78", marginLeft: "5px" }}
+              rotate="90"
+            />
           </span>
         </Title>
         <br />

@@ -16,6 +16,7 @@ import {
   Modal,
   Collapse,
   Breadcrumb,
+  Spin,
 } from "antd";
 import axios from "axios";
 import { updatePhoto, getCurrentUser } from "../services/auth";
@@ -42,12 +43,17 @@ const Project = (props) => {
   const [modelToDelete, setModelToDelete] = useState(null);
   const [modelUpdateModal, setModelUpdateModal] = useState(false);
   const [modelToUpdate, setModelToUpdate] = useState(false);
+  const [loadingModal, setLoadingModal] = useState(false);
 
   //load data functions
   useEffect(() => {
     const getProject = async () => {
+      await handleLoadingModalTrue();
+
       const { data } = await viewProject(props.match.params.projectId);
       setProject(data);
+      await handleLoadingModalFalse();
+
       if (fetchedProject === false) {
         setFetchedProject(true);
       }
@@ -57,7 +63,15 @@ const Project = (props) => {
 
   //Form functions
   async function onFinish({ createdModelName, description }) {
-    createModel(createdModelName, props.match.params.projectId, description);
+    await handleLoadingModalTrue();
+
+    await createModel(
+      createdModelName,
+      props.match.params.projectId,
+      description
+    );
+    await handleLoadingModalFalse();
+
     setFetchedProject(false);
     handleModal();
   }
@@ -71,10 +85,12 @@ const Project = (props) => {
   function setModelF(modelId) {
     setModelToDelete(modelId);
   }
-  function deleteModelConfirmed() {
-    console.log(modelToDelete);
-    const message = deleteCreatedModel(modelToDelete);
-    console.log(message);
+  async function deleteModelConfirmed() {
+    await handleLoadingModalTrue();
+
+    const message = await deleteCreatedModel(modelToDelete);
+    await handleLoadingModalFalse();
+
     setFetchedProject(false);
     handleDeleteModal();
   }
@@ -89,31 +105,55 @@ const Project = (props) => {
     setModelUpdateModal(!modelUpdateModal);
     updateModelForm.resetFields();
   }
-  function onFinishUpdate(values) {
-    editModel(modelToUpdate.modelId, values.modelName, values.description);
+  async function onFinishUpdate(values) {
+    await handleLoadingModalTrue();
+
+    await editModel(
+      modelToUpdate.modelId,
+      values.modelName,
+      values.description
+    );
+    await handleLoadingModalFalse();
+
     updateModelForm.resetFields();
     handleModelUpdateModal();
     setFetchedProject(false);
   }
+  //loading modal
+  async function handleLoadingModalTrue() {
+    await setLoadingModal(true);
+  }
+  async function handleLoadingModalFalse() {
+    await setLoadingModal(false);
+  }
   //image uploader
-  const uploadImageUrl = async (e) => {
-    const data = new FormData();
-    data.append("file", e.target.files[0]);
-    data.append("upload_preset", "lab-ironprofile-ahe");
-    const {
-      data: { secure_url },
-    } = await axios.post(
-      "https://api.cloudinary.com/v1_1/vicaty/image/upload",
-      data
-    );
-    await updatePhoto(secure_url);
-    const { user } = await getCurrentUser();
-    loginUser(user);
-  };
+  // const uploadImageUrl = async (e) => {
+  //   const data = new FormData();
+  //   data.append("file", e.target.files[0]);
+  //   data.append("upload_preset", "lab-ironprofile-ahe");
+  //   const {
+  //     data: { secure_url },
+  //   } = await axios.post(
+  //     "https://api.cloudinary.com/v1_1/vicaty/image/upload",
+  //     data
+  //   );
+  //   await updatePhoto(secure_url);
+  //   const { user } = await getCurrentUser();
+  //   loginUser(user);
+  // };
   return user ? (
     project ? (
       <div>
         <center>
+          <Modal
+            title="Loading... Please wait"
+            visible={loadingModal}
+            onOk={handleLoadingModalFalse}
+            onCancel={handleLoadingModalFalse}
+            okButtonProps={{ hidden: true }}
+            cancelButtonProps={{ hidden: true }}>
+            <Spin size="large" />
+          </Modal>
           <Modal
             title="Create new Model"
             visible={modalState}
