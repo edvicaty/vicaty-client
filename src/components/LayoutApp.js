@@ -84,7 +84,15 @@ const LayoutApp = ({ children }) => {
           )}
         </Menu>
       </Header>
-      <Content style={{ wordBreak: "break-all" }}>{children}</Content>
+      <Content
+        style={{
+          wordBreak: "break-all",
+
+          background:
+            "linear-gradient(90deg, #ABB4C8 0%, white 50% , #364d79 170%)",
+        }}>
+        {children}
+      </Content>
       <Footer
         style={{
           textAlign: "center",
