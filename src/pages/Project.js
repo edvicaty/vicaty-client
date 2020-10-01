@@ -192,6 +192,7 @@ const Project = (props) => {
                   htmlType="submit">
                   Submit
                 </Button>
+                {loadingModal ? "this could take a while, please wait" : ""}
               </Form.Item>
             </Form>
           </Modal>
@@ -238,6 +239,7 @@ const Project = (props) => {
                   htmlType="submit">
                   Submit
                 </Button>
+                {loadingModal ? "this could take a while, please wait" : ""}
               </Form.Item>
             </Form>
           </Modal>

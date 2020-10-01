@@ -249,6 +249,7 @@ const Model = (props) => {
                   htmlType="submit">
                   Submit
                 </Button>
+                {loadingModal ? "this could take a while, please wait" : ""}
               </Form.Item>
             </Form>
           </Modal>
@@ -377,6 +378,7 @@ const Model = (props) => {
                     htmlType="submit">
                     Add Data
                   </Button>
+                  {loadingModal ? "this could take a while, please wait" : ""}
                 </Form.Item>
               </Form>
             </Modal>
@@ -399,6 +401,7 @@ const Model = (props) => {
                 block>
                 DELETE
               </Button>
+              {loadingModal ? "this could take a while, please wait" : ""}
             </Modal>
             <Modal
               title="Delete Element"
@@ -465,6 +468,7 @@ const Model = (props) => {
                     block>
                     Update
                   </Button>
+                  {loadingModal ? "this could take a while, please wait" : ""}
                 </Form.Item>
               </Form>
             </Modal>

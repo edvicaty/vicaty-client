@@ -191,6 +191,7 @@ const Profile = () => {
                 htmlType="submit">
                 Submit
               </Button>
+              {loadingModal ? "this could take a while, please wait" : ""}
             </Form.Item>
           </Form>
         </Modal>
@@ -222,6 +223,7 @@ const Profile = () => {
                 htmlType="submit">
                 Submit
               </Button>
+              {loadingModal ? "this could take a while, please wait" : ""}
             </Form.Item>
           </Form>
         </Modal>
@@ -256,6 +258,7 @@ const Profile = () => {
                 htmlType="submit">
                 Duplicate
               </Button>
+              {loadingModal ? "this could take a while, please wait" : ""}
             </Form.Item>
           </Form>
         </Modal>

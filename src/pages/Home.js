@@ -63,13 +63,13 @@ const Home = () => {
           <div>
             <h3 style={contentStyle}>
               <FieldTimeOutlined style={{ color: "white" }} /> {`  `}
-              Modify data within seconds
+              Modify data fast
             </h3>
           </div>
           <div>
             <h3 style={contentStyle}>
               <CodeOutlined style={{ color: "white" }} /> {`  `}
-              Build API's without a line of code
+              API's without coding
             </h3>
           </div>
           <div>
@@ -79,132 +79,135 @@ const Home = () => {
             </h3>
           </div>
         </Carousel>
-        <Title
-          style={{
-            fontSize: "3.5rem",
-            marginTop: "2rem",
-          }}
-          level={1}>
-          <ApartmentOutlined /> Easy to use{" "}
-          <span
+
+        <div style={{ padding: "0 7%" }}>
+          <Title
             style={{
-              fontSize: "2.2rem",
-              color: "darkGray",
-            }}>
-            Easy to use
-          </span>
-        </Title>
-        <br />
-        <br />
-        <br />
-        <Title
-          style={{
-            fontSize: "2rem",
-            color: "#50648A",
-          }}
-          level={1}>
-          Plan your project and start building it immediately!{" "}
-        </Title>
-        <Title
-          style={{
-            fontSize: "2rem",
-            color: "#50648A",
-          }}
-          level={1}>
-          with intuitive work flow and easy access documentation{" "}
-        </Title>
-        <Image
-          style={{ margin: "30px 10%", width: "100%" }}
-          src="/docImgs/tree2d.png"
-        />
-        <Title
-          style={{
-            fontSize: "3.5rem",
-            marginTop: "8rem",
-          }}
-          level={1}>
-          <FieldTimeOutlined /> Modify data within seconds{" "}
-          <span
+              fontSize: "3.5rem",
+              marginTop: "2rem",
+            }}
+            level={1}>
+            <ApartmentOutlined /> Easy to use{" "}
+            <span
+              style={{
+                fontSize: "2.2rem",
+                color: "darkGray",
+              }}>
+              Easy to use
+            </span>
+          </Title>
+          <br />
+          <br />
+          <br />
+          <Title
             style={{
-              fontSize: "2.2rem",
-              color: "darkGray",
-            }}>
-            Modify data within seconds
-          </span>
-        </Title>
-        <br />
-        <br />
-        <br />
-        <Title
-          style={{
-            fontSize: "2rem",
-            color: "#50648A",
-          }}
-          level={1}>
-          Plan your project and start building it immediately!{" "}
-        </Title>
-        <Title
-          style={{
-            fontSize: "2rem",
-            color: "#50648A",
-          }}
-          level={1}>
-          with intuitive work flow and easy access documentation{" "}
-        </Title>
-        <Image
-          style={{ margin: "30px 10%", width: "100%" }}
-          src="/docImgs/dinnerModel.png"
-        />
-        <Title
-          style={{
-            fontSize: "3.5rem",
-            marginTop: "8rem",
-          }}
-          level={1}>
-          <CodeOutlined /> Build API's without a line of code{" "}
-          <span
+              fontSize: "2rem",
+              color: "#50648A",
+            }}
+            level={1}>
+            Plan your project and start building it immediately!{" "}
+          </Title>
+          <Title
             style={{
-              fontSize: "2.2rem",
-              color: "darkGray",
-            }}>
-            Build API's without a line of code
-          </span>
-        </Title>
-        <br />
-        <br />
-        <br />
-        <Title
-          style={{
-            fontSize: "2rem",
-            color: "#50648A",
-          }}
-          level={1}>
-          Vicaty allows you to create, modify and delete data{" "}
-        </Title>
-        <Title
-          style={{
-            fontSize: "2rem",
-            color: "#50648A",
-          }}
-          level={1}>
-          directly from the dashboard or using your API's endpoints{" "}
-        </Title>
-        <br />
-        <br />
-        <br />
-        <Title
-          style={{
-            fontSize: "4.2rem",
-            color: "#50648A",
-          }}
-          level={1}>
-          <Link to="/signup" style={{ color: "#364D78" }}>
-            <UserAddOutlined /> Join Now!
-          </Link>
-        </Title>
-        <br />
-        <br />
-        <br />
+              fontSize: "2rem",
+              color: "#50648A",
+            }}
+            level={1}>
+            with intuitive work flow and easy access documentation{" "}
+          </Title>
+          <Image
+            style={{ margin: "30px 10%", width: "100%" }}
+            src="/docImgs/tree2d.png"
+          />
+          <Title
+            style={{
+              fontSize: "3.5rem",
+              marginTop: "8rem",
+            }}
+            level={1}>
+            <FieldTimeOutlined /> Modify data within seconds{" "}
+            <span
+              style={{
+                fontSize: "2.2rem",
+                color: "darkGray",
+              }}>
+              Modify data within seconds
+            </span>
+          </Title>
+          <br />
+          <br />
+          <br />
+          <Title
+            style={{
+              fontSize: "2rem",
+              color: "#50648A",
+            }}
+            level={1}>
+            Plan your project and start building it immediately!{" "}
+          </Title>
+          <Title
+            style={{
+              fontSize: "2rem",
+              color: "#50648A",
+            }}
+            level={1}>
+            with intuitive work flow and easy access documentation{" "}
+          </Title>
+          <Image
+            style={{ margin: "30px 10%", width: "100%" }}
+            src="/docImgs/dinnerModel.png"
+          />
+          <Title
+            style={{
+              fontSize: "3.5rem",
+              marginTop: "8rem",
+            }}
+            level={1}>
+            <CodeOutlined /> Build API's without a line of code{" "}
+            <span
+              style={{
+                fontSize: "2.2rem",
+                color: "darkGray",
+              }}>
+              Build API's without a line of code
+            </span>
+          </Title>
+          <br />
+          <br />
+          <br />
+          <Title
+            style={{
+              fontSize: "2rem",
+              color: "#50648A",
+            }}
+            level={1}>
+            Vicaty allows you to create, modify and delete data{" "}
+          </Title>
+          <Title
+            style={{
+              fontSize: "2rem",
+              color: "#50648A",
+            }}
+            level={1}>
+            directly from the dashboard or using your API's endpoints{" "}
+          </Title>
+          <br />
+          <br />
+          <br />
+          <Title
+            style={{
+              fontSize: "4.2rem",
+              color: "#50648A",
+            }}
+            level={1}>
+            <Link to="/signup" style={{ color: "#364D78" }}>
+              <UserAddOutlined /> Join Now!
+            </Link>
+          </Title>
+          <br />
+          <br />
+          <br />
+        </div>
       </div>
     </center>
   );
