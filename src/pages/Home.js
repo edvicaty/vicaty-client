@@ -1,17 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button, Typography, Carousel, Image } from "antd";
+import { Typography, Carousel, Image } from "antd";
 import {
   ApartmentOutlined,
-  HomeOutlined,
-  FileOutlined,
-  LogoutOutlined,
-  LoginOutlined,
   UserAddOutlined,
-  AppstoreOutlined,
-  BlockOutlined,
-  BorderOutlined,
-  FileTextOutlined,
   HeartOutlined,
   FieldTimeOutlined,
   CodeOutlined,

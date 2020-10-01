@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import { Form, Input, Button, Cascader, Typography, notification } from "antd";
+import { Form, Input, Button, Typography, notification } from "antd";
 import { signup } from "../services/auth";
 import { Redirect } from "react-router-dom";
 import { Context } from "../context";
 import { UserAddOutlined } from "@ant-design/icons";
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const Signup = ({ history }) => {
   const [form] = Form.useForm();
@@ -56,7 +56,6 @@ const Signup = ({ history }) => {
 
       <Form.Item>
         <Button
-          // type="primary"
           style={{
             marginTop: "15px",
             backgroundColor: "#364d79",

@@ -1,25 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
-import {
-  ApartmentOutlined,
-  AppstoreOutlined,
-  BlockOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  Typography,
-  Input,
-  Card,
-  Row,
-  Col,
-  Form,
-  Modal,
-  Collapse,
-  Breadcrumb,
-  Spin,
-} from "antd";
-import axios from "axios";
-import { updatePhoto, getCurrentUser } from "../services/auth";
+import {} from "@ant-design/icons";
+import { Form, Spin } from "antd";
 import {
   viewProject,
   createModel,
@@ -27,13 +9,15 @@ import {
   editModel,
 } from "../services/backend";
 import { Context } from "../context";
-import { Link } from "react-router-dom";
-
-const { Title, Text } = Typography;
-const { Panel } = Collapse;
+import LoadingModal from "../components/LoadingModal";
+import CreateModelFormModal from "../components/Projects/CreateModelFormModal";
+import UpdateModelFormModal from "../components/Projects/UpdateModelFormModal";
+import DeleteModelFormModal from "../components/Projects/DeleteModelFormModal";
+import ModelsHeader from "../components/Projects/ModelsHeader";
+import ModelsBody from "../components/Projects/ModelsBody";
 
 const Project = (props) => {
-  const { user, loginUser } = useContext(Context);
+  const { user } = useContext(Context);
   const [project, setProject] = useState(null);
   const [form] = Form.useForm();
   const [updateModelForm] = Form.useForm();
@@ -45,15 +29,13 @@ const Project = (props) => {
   const [modelToUpdate, setModelToUpdate] = useState(false);
   const [loadingModal, setLoadingModal] = useState(false);
 
-  //load data functions
+  //load data functions ----------------------------------------------------------------------------------
   useEffect(() => {
     const getProject = async () => {
       await handleLoadingModalTrue();
-
       const { data } = await viewProject(props.match.params.projectId);
       setProject(data);
       await handleLoadingModalFalse();
-
       if (fetchedProject === false) {
         setFetchedProject(true);
       }
@@ -61,17 +43,15 @@ const Project = (props) => {
     getProject();
   }, [fetchedProject]);
 
-  //Form functions
+  //Create Model functions ----------------------------------------------------------------------------------
   async function onFinish({ createdModelName, description }) {
     await handleLoadingModalTrue();
-
     await createModel(
       createdModelName,
       props.match.params.projectId,
       description
     );
     await handleLoadingModalFalse();
-
     setFetchedProject(false);
     handleModal();
   }
@@ -79,6 +59,8 @@ const Project = (props) => {
   function handleModal() {
     setModalState(!modalState);
   }
+  //Delete Model functions ----------------------------------------------------------------------------------
+
   function handleDeleteModal() {
     setModelDeleteModal(!modelDeleteModal);
   }
@@ -87,13 +69,13 @@ const Project = (props) => {
   }
   async function deleteModelConfirmed() {
     await handleLoadingModalTrue();
-
-    const message = await deleteCreatedModel(modelToDelete);
+    await deleteCreatedModel(modelToDelete);
     await handleLoadingModalFalse();
-
     setFetchedProject(false);
     handleDeleteModal();
   }
+  //Update Model functions ----------------------------------------------------------------------------------
+
   function setModelToUpdateF(modelName, modelId, description) {
     setModelToUpdate({
       modelName: modelName,
@@ -107,7 +89,6 @@ const Project = (props) => {
   }
   async function onFinishUpdate(values) {
     await handleLoadingModalTrue();
-
     await editModel(
       modelToUpdate.modelId,
       values.modelName,
@@ -119,374 +100,61 @@ const Project = (props) => {
     handleModelUpdateModal();
     setFetchedProject(false);
   }
-  //loading modal
+
+  //loading modal --------------------------------------------------------------------------------------
   async function handleLoadingModalTrue() {
     await setLoadingModal(true);
   }
   async function handleLoadingModalFalse() {
     await setLoadingModal(false);
   }
-  //image uploader
-  // const uploadImageUrl = async (e) => {
-  //   const data = new FormData();
-  //   data.append("file", e.target.files[0]);
-  //   data.append("upload_preset", "lab-ironprofile-ahe");
-  //   const {
-  //     data: { secure_url },
-  //   } = await axios.post(
-  //     "https://api.cloudinary.com/v1_1/vicaty/image/upload",
-  //     data
-  //   );
-  //   await updatePhoto(secure_url);
-  //   const { user } = await getCurrentUser();
-  //   loginUser(user);
-  // };
+
   return user ? (
     project ? (
       <div>
         <center>
-          <Modal
-            title="Loading... Please wait"
-            visible={loadingModal}
-            onOk={handleLoadingModalFalse}
-            onCancel={handleLoadingModalFalse}
-            okButtonProps={{ hidden: true }}
-            cancelButtonProps={{ hidden: true }}>
-            <Spin size="large" />
-          </Modal>
-          <Modal
-            title="Create new Model"
-            visible={modalState}
-            onOk={handleModal}
-            onCancel={handleModal}>
-            <Form layout="vertical" form={form} onFinish={onFinish}>
-              <Form.Item
-                label="Model name"
-                name="createdModelName"
-                rules={[
-                  { required: true, message: "Please input model name" },
-                ]}>
-                <Input />
-              </Form.Item>
-              <Form.Item
-                label="Model description or value"
-                name="description"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input model value or description",
-                  },
-                ]}>
-                <Input />
-              </Form.Item>
-
-              <Form.Item>
-                <Button
-                  style={{
-                    marginTop: "15px",
-                    backgroundColor: "#364d79",
-                    color: "white",
-                    borderRadius: "10px",
-                  }}
-                  block
-                  htmlType="submit">
-                  Submit
-                </Button>
-                {loadingModal ? "this could take a while, please wait" : ""}
-              </Form.Item>
-            </Form>
-          </Modal>
-          <Modal
-            title="Update Model"
-            visible={modelUpdateModal}
-            onOk={handleModelUpdateModal}
-            onCancel={handleModelUpdateModal}>
-            <Form
-              layout="vertical"
-              form={updateModelForm}
-              onFinish={onFinishUpdate}>
-              <Form.Item
-                initialValue={modelToUpdate.modelName}
-                label="Model name"
-                name="modelName"
-                rules={[
-                  { required: true, message: "Please input model's name" },
-                ]}>
-                <Input />
-              </Form.Item>
-              <Form.Item
-                initialValue={modelToUpdate.description}
-                label="Model description"
-                name="description"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input model's description",
-                  },
-                ]}>
-                <Input />
-              </Form.Item>
-
-              <Form.Item>
-                <Button
-                  style={{
-                    marginTop: "15px",
-                    backgroundColor: "#638165",
-                    color: "white",
-                    borderRadius: "10px",
-                  }}
-                  block
-                  htmlType="submit">
-                  Submit
-                </Button>
-                {loadingModal ? "this could take a while, please wait" : ""}
-              </Form.Item>
-            </Form>
-          </Modal>
-          <Modal
-            title="Are you sure you want to delete this Model?"
-            visible={modelDeleteModal}
-            onOk={handleDeleteModal}
-            onCancel={handleDeleteModal}>
-            <Button
-              style={{
-                margin: "15px 0",
-                backgroundColor: "red",
-                color: "white",
-              }}
-              block
-              onClick={() => {
-                deleteModelConfirmed();
-              }}>
-              DELETE
-            </Button>
-          </Modal>
-          <div
-            style={{
-              width: "100vw",
-              padding: "30px 15vw",
-              background: "linear-gradient(90deg, #364d79 0%, white 220%)",
-              color: "white",
-            }}>
-            <Breadcrumb
-              style={{ position: "relative", bottom: "20px" }}
-              separator="">
-              <Breadcrumb.Item>
-                <Link style={{ color: "white" }} to="/profile">
-                  <ApartmentOutlined style={{ color: "white" }} /> Projects
-                </Link>
-              </Breadcrumb.Item>
-              <span style={{ color: "white" }}>{`   >   `}</span>
-              <Breadcrumb.Item>
-                <Link
-                  style={{ color: "white" }}
-                  to={`/project/${props.match.params.projectName}/${props.match.params.projectId}`}>
-                  <AppstoreOutlined style={{ color: "white" }} />
-                  {` `}
-                  {props.match.params.projectName}
-                </Link>
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <Title style={{ color: "white" }} level={1}>
-              <AppstoreOutlined /> {props.match.params.projectName}
-            </Title>
-            <Title style={{ color: "white" }} level={3}>
-              PROJECT Id: {props.match.params.projectId}
-            </Title>
-
-            <h3 style={{ color: "white" }}>
-              Here you can see all your {`  `}
-              <span style={{ fontSize: "1.8rem", fontWeight: "bold" }}>
-                models
-              </span>
-              {"  "}
-              corresponding to the
-              {props.match.params.projectName} project. click below to create a
-              new one!
-            </h3>
-            <Button
-              style={{
-                margin: "15px 0",
-                backgroundColor: "white",
-                color: "#364d79",
-              }}
-              onClick={handleModal}
-              block>
-              Create New Model!
-            </Button>
-            <Collapse
-              style={{
-                background: "linear-gradient(90deg, white 0%, #364d79 220%)",
-                marginBottom: "15px",
-              }}>
-              <Panel header="Show API endpoint to fetch Project" key="1">
-                <p>
-                  <strong>Route :</strong>{" "}
-                  https://vicaty-api.herokuapp.com/user/project/
-                  {props.match.params.projectId}
-                </p>
-                <p>
-                  <strong>Request Type :</strong> POST
-                </p>
-                <p>
-                  <strong>Request Body :</strong> userId : *your user Id*
-                </p>
-              </Panel>
-            </Collapse>
-          </div>
-          <div style={{ margin: "20px" }}>
-            <Row gutter={[16, 16]}>
-              {project[0].createdModels.map((model) => {
-                return (
-                  <Col key={model._id} xs={24} sm={24} md={12} lg={8}>
-                    <Card
-                      key={model._id}
-                      title={
-                        <>
-                          <BlockOutlined />
-                          {` `}
-                          {model.createdModelName}
-                        </>
-                      }
-                      bordered={true}
-                      style={{
-                        marginBottom: "40px",
-                        borderTop: "3px solid #364d79",
-                      }}>
-                      <p>
-                        <strong>Model description:</strong> {model.description}
-                      </p>
-                      <Button
-                        style={{
-                          margin: "15px 0",
-                          backgroundColor: "white",
-                          color: "#364d79",
-                          width: "100%",
-                        }}
-                        onClick={async () => {
-                          await updateModelForm.resetFields();
-                          await setModelToUpdateF(
-                            model.createdModelName,
-                            model._id,
-                            model.description
-                          );
-                          handleModelUpdateModal();
-                        }}
-                        block>
-                        Update Model's name and description
-                      </Button>
-                      <p>
-                        <strong>Model id:</strong> {model._id}
-                      </p>
-                      <p>
-                        <strong>Creation date:</strong>{" "}
-                        {model.created_at.slice(0, 10)}
-                      </p>
-                      <p>
-                        <strong>Last updated:</strong>{" "}
-                        {model.updated_at.slice(0, 10)}
-                      </p>
-                      <Collapse
-                        style={{
-                          background:
-                            "linear-gradient(90deg, white 0%, #364d79 220%)",
-                          marginBottom: "15px",
-                        }}>
-                        <Panel header="Show API to fetch this model" key="1">
-                          <p>
-                            <strong>Route :</strong>{" "}
-                            https://vicaty-api.herokuapp.com/user/createdModel/
-                            {model._id}
-                          </p>
-                          <p>
-                            <strong>Request Type :</strong> POST
-                          </p>
-                          <p>
-                            <strong>Request Body :</strong> userId : *your user
-                            Id*
-                          </p>
-                        </Panel>
-                      </Collapse>
-                      <Button
-                        style={{
-                          width: "100%",
-                          margin: "15px 0",
-                          backgroundColor: "#364d79",
-                          color: "white",
-                        }}>
-                        <Link
-                          to={`/model/${model.createdModelName}/${model._id}/${props.match.params.projectName}/${props.match.params.projectId}`}>
-                          Go to model
-                        </Link>
-                      </Button>
-                      <Button
-                        style={{
-                          width: "100%",
-                          margin: "15px 0",
-                          backgroundColor: "red",
-                          color: "white",
-                        }}
-                        onClick={() => {
-                          setModelF(model._id);
-                          handleDeleteModal();
-                        }}>
-                        DELETE
-                      </Button>
-                      {/* <Collapse
-                        style={{
-                          background:
-                            "linear-gradient(90deg, white 0%, #364d79 220%)",
-                        }}>
-                        <Panel
-                          header="All available API's endpoints for current model"
-                          key="1">
-                          {Object.entries(model.api).map((object) => {
-                            return (
-                              <Card
-                                style={{
-                                  background:
-                                    "linear-gradient(90deg, white 0%, #364d79 220%)",
-                                }}
-                                key={object[0]}>
-                                <p>
-                                  <strong style={{ width: "100%" }}>
-                                    Endpoint function:{" "}
-                                  </strong>
-                                  {object[0]}
-                                </p>
-                                <p>
-                                  <strong style={{ width: "100%" }}>
-                                    Request:{" "}
-                                  </strong>
-                                  {object[1].reqType}
-                                </p>
-                                <p>
-                                  <strong style={{ width: "100%" }}>
-                                    Route:{" "}
-                                  </strong>{" "}
-                                  {object[1].route}
-                                </p>
-                                <p>
-                                  <strong style={{ width: "100%" }}>
-                                    Request body elements:{" "}
-                                  </strong>
-                                  {object[1].body}
-                                </p>
-                              </Card>
-                            );
-                          })}
-                        </Panel>
-                      </Collapse> */}
-                    </Card>
-                  </Col>
-                );
-              })}
-            </Row>
-          </div>
+          <LoadingModal
+            loadingModal={loadingModal}
+            handleLoadingModalFalse={handleLoadingModalFalse}
+          />
+          <CreateModelFormModal
+            modalState={modalState}
+            handleModal={handleModal}
+            form={form}
+            onFinish={onFinish}
+            loadingModal={loadingModal}
+          />
+          <UpdateModelFormModal
+            modelUpdateModal={modelUpdateModal}
+            handleModelUpdateModal={handleModelUpdateModal}
+            updateModelForm={updateModelForm}
+            onFinishUpdate={onFinishUpdate}
+            modelToUpdate={modelToUpdate}
+            loadingModal={loadingModal}
+          />
+          <DeleteModelFormModal
+            modelDeleteModal={modelDeleteModal}
+            handleDeleteModal={handleDeleteModal}
+            deleteModelConfirmed={deleteModelConfirmed}
+            loadingModal={loadingModal}
+          />
+          <ModelsHeader props={props} handleModal={handleModal} />
+          <ModelsBody
+            project={project}
+            updateModelForm={updateModelForm}
+            setModelToUpdateF={setModelToUpdateF}
+            handleModelUpdateModal={handleModelUpdateModal}
+            props={props}
+            loadingModal={loadingModal}
+            setModelF={setModelF}
+            handleDeleteModal={handleDeleteModal}
+          />
         </center>
       </div>
     ) : (
-      <p>Loading</p>
+      <p style={{ textAlign: "center", fontSize: "3rem" }}>
+        Loading... <Spin size="large" />{" "}
+      </p>
     )
   ) : (
     <Redirect to="/" />
