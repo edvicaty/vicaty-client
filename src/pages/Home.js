@@ -135,7 +135,7 @@ const Home = () => {
               color: "#50648A",
             }}
             level={1}>
-            Plan your project and start building it immediately!{" "}
+            Vicaty allows you to create, modify and delete data{" "}
           </Title>
           <Title
             style={{
@@ -143,7 +143,7 @@ const Home = () => {
               color: "#50648A",
             }}
             level={1}>
-            with intuitive work flow and easy access documentation{" "}
+            directly from the dashboard or using your API's endpoints{" "}
           </Title>
           <Image
             style={{ margin: "30px 10%", width: "100%" }}
@@ -167,13 +167,14 @@ const Home = () => {
           <br />
           <br />
           <br />
+
           <Title
             style={{
               fontSize: "2rem",
               color: "#50648A",
             }}
             level={1}>
-            Vicaty allows you to create, modify and delete data{" "}
+            Access all your information everywhere with your API's endpoints{" "}
           </Title>
           <Title
             style={{
@@ -181,7 +182,7 @@ const Home = () => {
               color: "#50648A",
             }}
             level={1}>
-            directly from the dashboard or using your API's endpoints{" "}
+            What are you waiting for?{" "}
           </Title>
           <br />
           <br />
